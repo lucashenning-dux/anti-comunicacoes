@@ -1,0 +1,253 @@
+[
+  {
+    "id": "01-codigo-verificacao",
+    "group": "Autenticação",
+    "screen": "S1 -> S2",
+    "trigger": "Usuário pede o código de acesso no cadastro ou no login",
+    "subject": "{{code}} é o seu código ANTI",
+    "preheader": "Válido por 10 minutos. Não compartilhe com ninguem.",
+    "vars": [
+      "first_name",
+      "code"
+    ]
+  },
+  {
+    "id": "02-recuperar-senha",
+    "group": "Autenticação",
+    "screen": "Login -> S6",
+    "trigger": "Clique em \"Esqueci minha senha\"",
+    "subject": "Redefinir sua senha do ANTI",
+    "preheader": "Link válido por 30 minutos.",
+    "vars": [
+      "first_name",
+      "reset_url",
+      "request_ip",
+      "request_device"
+    ]
+  },
+  {
+    "id": "03-senha-alterada",
+    "group": "Autenticação",
+    "screen": "S6 / screen-tx-password",
+    "trigger": "Senha de acesso ou senha transacional alterada com sucesso",
+    "subject": "Sua senha do ANTI foi alterada",
+    "preheader": "Se não foi você, fale com o suporte agora.",
+    "vars": [
+      "first_name",
+      "changed_at",
+      "request_device"
+    ]
+  },
+  {
+    "id": "04-boas-vindas",
+    "group": "Autenticação",
+    "screen": "Success / T1",
+    "trigger": "Cadastro concluído (empresa + PIN definidos)",
+    "subject": "Bem-vindo ao ANTI, {{first_name}}",
+    "preheader": "Sua conta está criada. Faltam poucos passos para antecipar.",
+    "vars": [
+      "first_name",
+      "company_name"
+    ]
+  },
+  {
+    "id": "05-documentos-em-analise",
+    "group": "KYC",
+    "screen": "screen-docs-sent",
+    "trigger": "Todos os documentos do KYC enviados",
+    "subject": "Recebemos seus documentos",
+    "preheader": "Análise em até 2 dias úteis. Avisamos por aqui e no app.",
+    "vars": [
+      "first_name",
+      "company_name",
+      "submitted_at"
+    ]
+  },
+  {
+    "id": "06-documento-rejeitado",
+    "group": "KYC",
+    "screen": "screen-kyc-rejected",
+    "trigger": "Um documento específico foi reprovado na análise",
+    "subject": "Precisamos que você reenvie um documento",
+    "preheader": "{{doc_name}} não foi aprovado. Reenviar leva 2 minutos.",
+    "vars": [
+      "first_name",
+      "doc_name",
+      "reject_reason",
+      "company_name"
+    ]
+  },
+  {
+    "id": "07-conta-aprovada",
+    "group": "KYC",
+    "screen": "screen-upgrade-approved / T1c",
+    "trigger": "KYC aprovado e conta habilitada para transacionar",
+    "subject": "Sua conta ANTI está ativa",
+    "preheader": "Verificação aprovada. Você já pode antecipar.",
+    "vars": [
+      "first_name",
+      "company_name",
+      "credit_limit"
+    ]
+  },
+  {
+    "id": "08-convite-representante",
+    "group": "KYC",
+    "screen": "screen-invite-rep",
+    "trigger": "Usuário convida o representante legal para concluir a verificação",
+    "subject": "{{inviter_name}} pediu sua verificação no ANTI",
+    "preheader": "Você foi indicado como representante legal da {{company_name}}.",
+    "vars": [
+      "rep_name",
+      "inviter_name",
+      "company_name",
+      "invite_url"
+    ]
+  },
+  {
+    "id": "09-proposta-disponivel",
+    "group": "Antecipação",
+    "screen": "screen-proposal",
+    "trigger": "Proposta gerada e disponível para o cedente aceitar",
+    "subject": "Sua proposta de antecipação está pronta",
+    "preheader": "{{net_amount}} disponiveis. Proposta valida até {{expires_at}}.",
+    "vars": [
+      "first_name",
+      "order_id",
+      "net_amount",
+      "gross_amount",
+      "rate",
+      "expires_at"
+    ]
+  },
+  {
+    "id": "10-contrato-para-assinatura",
+    "group": "Antecipação",
+    "screen": "A11 / A12",
+    "trigger": "Proposta aceita, contrato gerado e enviado para assinatura",
+    "subject": "Seu contrato está pronto para assinatura",
+    "preheader": "Assine para liberar a operação {{order_id}}.",
+    "vars": [
+      "first_name",
+      "order_id",
+      "net_amount",
+      "sign_url"
+    ]
+  },
+  {
+    "id": "11-pedido-em-analise",
+    "group": "Antecipação",
+    "screen": "screen-a13-submitted / OT2",
+    "trigger": "Pedido de antecipação enviado e em análise de risco",
+    "subject": "Pedido {{order_id}} em análise",
+    "preheader": "Recebemos seu pedido. Resposta em algumas horas.",
+    "vars": [
+      "first_name",
+      "order_id",
+      "gross_amount",
+      "sacado_name"
+    ]
+  },
+  {
+    "id": "12-aguardando-sacado",
+    "group": "Antecipação",
+    "screen": "OT3",
+    "trigger": "Operação aguardando confirmação do sacado",
+    "subject": "Aguardando confirmação do sacado",
+    "preheader": "{{sacado_name}} precisa confirmar a operação {{order_id}}.",
+    "vars": [
+      "first_name",
+      "order_id",
+      "sacado_name",
+      "sacado_contact"
+    ]
+  },
+  {
+    "id": "13-sacado-confirmou",
+    "group": "Antecipação",
+    "screen": "OT3b",
+    "trigger": "Sacado confirmou a operação",
+    "subject": "O sacado confirmou sua operação",
+    "preheader": "{{order_id}} confirmada. Pagamento a caminho.",
+    "vars": [
+      "first_name",
+      "order_id",
+      "sacado_name",
+      "net_amount",
+      "expected_payment"
+    ]
+  },
+  {
+    "id": "14-operacao-liquidada",
+    "group": "Antecipação",
+    "screen": "OT4",
+    "trigger": "Pagamento efetivado na conta do cedente",
+    "subject": "Dinheiro na conta: {{net_amount}}",
+    "preheader": "Operação {{order_id}} liquidada com sucesso.",
+    "vars": [
+      "first_name",
+      "order_id",
+      "net_amount",
+      "paid_at",
+      "bank_account"
+    ]
+  },
+  {
+    "id": "15-pedido-cancelado",
+    "group": "Antecipação",
+    "screen": "OT5",
+    "trigger": "Pedido cancelado, recusado ou expirado",
+    "subject": "Pedido {{order_id}} cancelado",
+    "preheader": "Entenda o motivo e o que fazer agora.",
+    "vars": [
+      "first_name",
+      "order_id",
+      "cancel_reason"
+    ]
+  },
+  {
+    "id": "16-transferencia-enviada",
+    "group": "Conta",
+    "screen": "screen-fs2c-success",
+    "trigger": "Transferência (Pix/TED) concluída",
+    "subject": "Comprovante: {{amount}} enviados",
+    "preheader": "Transferência para {{recipient_name}} concluída.",
+    "vars": [
+      "first_name",
+      "amount",
+      "recipient_name",
+      "recipient_doc",
+      "tx_id",
+      "paid_at"
+    ]
+  },
+  {
+    "id": "17-boleto-emitido",
+    "group": "Conta",
+    "screen": "FS3",
+    "trigger": "Boleto emitido pelo usuário",
+    "subject": "Boleto emitido: {{amount}}",
+    "preheader": "Vencimento em {{due_date}}. Link para envio ao pagador.",
+    "vars": [
+      "first_name",
+      "amount",
+      "payer_name",
+      "due_date",
+      "boleto_url"
+    ]
+  },
+  {
+    "id": "18-pagamento-falhou",
+    "group": "Conta",
+    "screen": "screen-payment-failed",
+    "trigger": "Pagamento ou transferência recusada",
+    "subject": "Não conseguimos concluir seu pagamento",
+    "preheader": "Nenhum valor foi debitado. Veja o motivo.",
+    "vars": [
+      "first_name",
+      "amount",
+      "fail_reason",
+      "tx_id"
+    ]
+  }
+]

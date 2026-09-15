@@ -1,0 +1,102 @@
+# ANTI · Comunicações
+
+Régua de emails transacionais do ANTI: o copy, o layout e as regras de quando cada
+mensagem dispara. Dezoito emails de serviço, um para cada mudança de estado que o
+aplicativo já comunica na Central de Notificações.
+
+Este repositório é a fonte de verdade do **conteúdo** das comunicações. Ele não é
+código do aplicativo e não sobe junto com ele — os templates vivem no SendGrid, que
+tem ciclo de publicação próprio. Uma mudança de texto aqui não exige release do app.
+
+## Começando
+
+Não há dependências. Python 3 e mais nada.
+
+```bash
+python3 build.py          # regenera os 18 HTML em dist/
+python3 make_preview.py   # regenera preview.html
+```
+
+Abra `preview.html` no navegador para ver a régua completa, os gatilhos, o status de
+implementação de cada email e os dezoito layouts renderizados com dados de exemplo.
+
+## Estrutura
+
+```
+build.py          gerador — o copy, os gatilhos e a régua moram aqui
+regua.json        índice gerado: gatilho, tela, assunto, preheader, variáveis
+make_preview.py   gera a página de revisão
+preview.html      página de revisão (gerada)
+dist/             18 HTML autocontidos, prontos para colar no SendGrid (gerado)
+testdata/         JSON de exemplo para o campo Test Data do SendGrid
+```
+
+`dist/` é gerado, mas está versionado de propósito: é o arquivo que a pessoa copia e
+cola no SendGrid, e ter o diff dele no histórico mostra exatamente o que mudou em cada
+template a cada alteração de copy.
+
+## Alterando o texto de um email
+
+Todo o conteúdo mora na lista `EMAILS` em `build.py` — um dicionário por email, com
+assunto, preheader, gatilho, tela correspondente no app e os blocos do corpo. Edite
+ali e rode `python3 build.py`. Nunca edite os arquivos em `dist/` à mão: eles são
+sobrescritos no build seguinte.
+
+Os blocos disponíveis para montar um corpo são funções no topo do `build.py`:
+`eyebrow`, `title`, `paragraph`, `code_box`, `data_rows`, `callout`, `button` e
+`small`. Compor um email novo é escrever uma entrada na lista usando esses blocos —
+não é escrever HTML.
+
+## Publicando no SendGrid
+
+1. Email API › Dynamic Templates › **Create**.
+2. Abra o **Code Editor** — não o Design Editor, que reescreve o markup ao salvar.
+3. Cole o arquivo de `dist/` inteiro, do `<!DOCTYPE html>` ao `</html>`.
+4. O assunto vai no campo **Subject**, separado do corpo. Ele está em `regua.json`.
+5. Cole o JSON de `testdata/` no painel **Test Data** para ver o preview preenchido.
+6. O backend dispara pela Mail Send API com o `template_id` e o objeto
+   `dynamic_template_data`. O mesmo evento que cria a notificação no app manda o email.
+
+As variáveis estão em Handlebars (`{{first_name}}`), que é o formato dos Dynamic
+Templates — não as substitution tags antigas do SendGrid.
+
+## Regras de layout
+
+Elas não são preferência estética; são o que sobrevive ao Outlook, que renderiza com
+o motor do Word.
+
+- **Tabelas para estrutura.** Nada de `div` posicionada, flexbox ou grid.
+- **Estilo inline no elemento.** O único `<style>` no `<head>` existe para a media
+  query, que é a única regra que não dá para inlinear.
+- **Nenhum arquivo externo.** Sem CSS separado, sem imagem hospedada. Cliente de email
+  não busca recurso externo: o Gmail remove `<link>` e o Outlook o ignora.
+- **600px de largura**, com fallback para 100% abaixo de 620px.
+- **Fonte com pilha de fallback real.** Gmail e Outlook não carregam webfont; o email
+  chega em Helvetica ou Arial, e o layout precisa se manter assim.
+
+Por isso o HTML não sai de exportação de ferramenta de design. O Figma serve para
+decidir o layout; o arquivo nasce aqui.
+
+## Onde cada email se encaixa
+
+| Seção | Emails |
+|---|---|
+| Autenticação | código de acesso, redefinição de senha, senha alterada, boas-vindas |
+| KYC | documentos em análise, documento rejeitado, conta aprovada, convite ao representante |
+| Antecipação | proposta, contrato, pedido em análise, aguardando sacado, sacado confirmou, liquidada, cancelado |
+| Conta | transferência enviada, boleto emitido, pagamento recusado |
+
+A tabela completa — com gatilho, tela do app, persistência na Central de Notificações
+e status de implementação — está em `preview.html`.
+
+## Pendências
+
+- **Nenhum template está implementado.** O placar em `preview.html` está zerado nas
+  duas colunas (implementada e em produção). O status mora no dicionário `STATUS` em
+  `make_preview.py`.
+- **Domínio de envio indefinido.** Os rodapés citam `suporte@anti.com.br`, que é
+  domínio de terceiro — precisa ser trocado quando o domínio da marca for decidido.
+  O endereço e os dados legais da emissora são variáveis de template.
+- **`testdata/` cobre só o email 04.** Os demais precisam do JSON de exemplo.
+- **Idioma único.** O copy está em PT-BR; o app é bilíngue. Falta decidir se o email
+  segue o idioma do perfil.
