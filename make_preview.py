@@ -346,6 +346,32 @@ table.guide tfoot th {{ text-align:left; font-family:var(--f-mono); font-size:10
 .mail {{ scroll-margin-top:24px; }}
 .mail:target {{ border-color:var(--acid-deep); box-shadow:0 0 0 3px var(--acid); }}
 
+
+/* ---- dominios de envio ---- */
+.doms {{ display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:18px; }}
+.dom {{ background:var(--card); border:1px solid var(--line); border-radius:16px; padding:24px; display:flex; flex-direction:column; gap:10px; }}
+.dom-role {{ font-family:var(--f-mono); font-weight:700; font-size:9.5px; text-transform:uppercase; letter-spacing:.14em; }}
+.dom-1 .dom-role {{ color:var(--conta); }}
+.dom-2 .dom-role {{ color:var(--ant); }}
+.dom-3 .dom-role {{ color:var(--kyc); }}
+.dom-addr {{ font-family:var(--f-dis); font-weight:700; font-size:17px; letter-spacing:-.3px; color:var(--ink); word-break:break-all; }}
+.dom-what {{ font-size:13.5px; color:var(--body); margin:0; }}
+.dom-rule {{ font-family:var(--f-mono); font-size:11px; line-height:1.6; color:var(--mute); border-top:1px solid var(--line-2); padding-top:10px; margin-top:auto; }}
+.dom-3 {{ border-style:dashed; }}
+
+/* ---- em construcao ---- */
+.wip {{ border:1px dashed var(--line); border-radius:16px; padding:30px 32px; background:var(--card); }}
+.wip-badge {{ display:inline-block; font-family:var(--f-mono); font-weight:700; font-size:9.5px; text-transform:uppercase; letter-spacing:.14em; color:var(--kyc); border:1px solid currentColor; border-radius:100px; padding:5px 12px; margin-bottom:16px; }}
+.wip h3 {{ font-family:var(--f-dis); font-weight:700; font-size:24px; letter-spacing:-.6px; margin:0 0 14px; color:var(--ink); }}
+.wip p {{ max-width:62ch; font-size:14.5px; color:var(--body); margin:0 0 14px; }}
+.wip-grid {{ display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:22px; margin-top:26px; padding-top:24px; border-top:1px solid var(--line-2); }}
+.wip-col h4 {{ font-family:var(--f-mono); font-weight:700; font-size:9.5px; text-transform:uppercase; letter-spacing:.14em; color:var(--mute); margin:0 0 12px; }}
+.wip-col ul {{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:10px; }}
+.wip-col li {{ font-size:13.5px; color:var(--body); padding-left:20px; position:relative; line-height:1.55; }}
+.wip-col li::before {{ content:"—"; position:absolute; left:0; color:var(--mute); font-family:var(--f-mono); }}
+.wip-col.q li::before {{ content:"?"; color:var(--kyc); font-weight:700; }}
+.wip-col li b {{ color:var(--ink); font-weight:600; }}
+
 @media (max-width:820px) {{
   .anatomy, .stage {{ grid-template-columns:1fr; gap:24px; }}
   .mails {{ grid-template-columns:1fr; }}
@@ -390,6 +416,32 @@ table.guide tfoot th {{ text-align:left; font-family:var(--f-mono); font-size:10
 </div>
 
 <div class="block">
+  <h2 class="sec">Domínios de envio &mdash; três remetentes, três reputações</h2>
+  <p class="lede" style="margin:0 0 26px;">Na hora de autenticar os domínios no SendGrid, a separação importa mais do que parece: reputação de entrega é medida por domínio. Se um disparo de marketing for marcado como spam em volume, quem paga a conta é o domínio que mandou o disparo &mdash; e a régua transacional não pode ser esse domínio, porque dela depende o código de acesso que destrava o login.</p>
+  <div class="doms">
+    <div class="dom dom-1">
+      <div class="dom-role">Corporativo &middot; interno</div>
+      <div class="dom-addr">@wearedux.com</div>
+      <p class="dom-what">O email das pessoas da Dux. Circulação interna, conversa com cliente, jurídico, cobrança, assinatura de contrato.</p>
+      <div class="dom-rule">Nunca usado para envio automático nem em massa.</div>
+    </div>
+    <div class="dom dom-2">
+      <div class="dom-role">Transacional &middot; a régua</div>
+      <div class="dom-addr">@sejaanti.com.br</div>
+      <p class="dom-what">Os dezoito emails deste documento. Tudo que o sistema dispara sozinho a partir de uma mudança de estado: código, KYC, proposta, liquidação, comprovante.</p>
+      <div class="dom-rule">É o domínio mais crítico dos três. Nada de marketing passa por aqui.</div>
+    </div>
+    <div class="dom dom-3">
+      <div class="dom-role">Marketing &middot; a definir</div>
+      <div class="dom-addr">@mkt.sejaanti.com.br</div>
+      <p class="dom-what">Campanha, novidade de produto, conteúdo, reengajamento. Subdomínio proposto, ainda não decidido.</p>
+      <div class="dom-rule">Subdomínio próprio justamente para não sujar o transacional.</div>
+    </div>
+  </div>
+  <div class="note" style="border-left-color:var(--conta);"><b>Ao configurar no SendGrid</b><p>Autentique cada domínio separadamente, e mantenha o marketing em subuser e IP próprios. O grupo de descadastro (<i>unsubscribe group</i>) existe só no marketing: email de serviço não pode cair no mesmo opt-out, porque enquanto a conta estiver ativa o cliente precisa receber o aviso de documento rejeitado e o comprovante de transferência. O <code>Reply-To</code> da régua transacional aponta para uma caixa monitorada de verdade &mdash; nada de <code>no-reply</code> que devolve bounce.</p></div>
+</div>
+
+<div class="block">
   <h2 class="sec">Levar para o SendGrid</h2>
   <div class="impl">
     <div class="step"><div class="kicker">Passo 1</div><h4>Um Dynamic Template por arquivo</h4><p>Email API → Dynamic Templates → Create. Cole o HTML no <i>Code Editor</i> (não no Design Editor, que reescreve o markup). O assunto vai no campo Subject, separado do corpo.</p></div>
@@ -404,6 +456,38 @@ table.guide tfoot th {{ text-align:left; font-family:var(--f-mono); font-size:10
 ├── make_preview.py         gera esta página
 ├── dist/                   18 HTML autocontidos, prontos para colar no SendGrid
 └── testdata/               JSON de exemplo para o campo Test Data</div>
+</div>
+
+<div class="block">
+  <h2 class="sec">Régua do sacado &mdash; risco sacado</h2>
+  <div class="wip">
+    <span class="wip-badge">Em construção</span>
+    <h3>O sacado também vai receber email.</h3>
+    <p>Risco sacado é o modelo padrão da operação: a decisão de crédito olha principalmente para quem vai pagar a nota, não para quem a vendeu. É no sacado que mora o risco &mdash; e, em 95% das operações, é o pagamento dele que precisa cair na conta escrow antes de chegar ao cliente.</p>
+    <p>Isso faz dele um destinatário de comunicação, não só um nome no cadastro. Só que uma régua para o sacado não é uma extensão desta: ele não tem conta no app, não pediu nada à ANTI, e o que se diz a ele tem peso jurídico sobre o domicílio de pagamento. Merece desenho próprio, com jurídico na mesa.</p>
+    <p>O app já prevê os dois primeiros passos desse caminho &mdash; as telas de informar o sacado e de solicitação enviada, e o estado de operação aguardando confirmação. O que falta é a comunicação que sai dali.</p>
+    <div class="wip-grid">
+      <div class="wip-col">
+        <h4>O que provavelmente entra</h4>
+        <ul>
+          <li><b>Confirmação da operação</b> &mdash; pedido ao sacado para confirmar a nota e o valor</li>
+          <li><b>Notificação da cessão</b> &mdash; aviso de que o crédito mudou de titular e de qual passa a ser o domicílio de pagamento</li>
+          <li><b>Lembrete de vencimento</b> &mdash; antes da data</li>
+          <li><b>Confirmação de pagamento</b> &mdash; recibo depois da liquidação</li>
+        </ul>
+      </div>
+      <div class="wip-col q">
+        <h4>O que precisa ser decidido antes</h4>
+        <ul>
+          <li>Quem assina o email aos olhos do sacado &mdash; ANTI, Dux, ou o próprio cedente</li>
+          <li>Qual domínio envia, já que não é o mesmo público da régua do cedente</li>
+          <li>Base legal do contato: o sacado nunca deu dado à ANTI</li>
+          <li>Se a instrução de pagamento vive no email ou só no boleto e no CNAB</li>
+          <li>Se há persistência em algum lugar, já que ele não tem app</li>
+        </ul>
+      </div>
+    </div>
+  </div>
 </div>
 
 <footer class="end">ANTI · uma empresa DUX · ponto de partida para revisão de copy e jurídico</footer>

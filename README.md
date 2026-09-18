@@ -60,6 +60,25 @@ não é escrever HTML.
 As variáveis estão em Handlebars (`{{first_name}}`), que é o formato dos Dynamic
 Templates — não as substitution tags antigas do SendGrid.
 
+## Domínios de envio
+
+Reputação de entrega é medida por domínio, então os três públicos ficam separados na
+configuração do SendGrid:
+
+| Domínio | Uso | Regra |
+|---|---|---|
+| `@wearedux.com` | email corporativo das pessoas da Dux | nunca envia automático nem em massa |
+| `@sejaanti.com.br` | a régua transacional deste repositório | nada de marketing passa por aqui |
+| `@mkt.sejaanti.com.br` | email marketing (subdomínio proposto, a definir) | subuser e IP próprios |
+
+O transacional é o domínio mais crítico dos três: é dele que sai o código de acesso
+que destrava o login. Se um disparo de marketing for marcado como spam em volume,
+quem paga é o domínio que enviou — por isso o marketing mora num subdomínio à parte.
+
+O grupo de descadastro existe só no marketing. Email de serviço não entra no mesmo
+opt-out: enquanto a conta estiver ativa, o cliente precisa receber o aviso de
+documento rejeitado e o comprovante de transferência.
+
 ## Regras de layout
 
 Elas não são preferência estética; são o que sobrevive ao Outlook, que renderiza com
@@ -94,9 +113,12 @@ e status de implementação — está em `preview.html`.
 - **Nenhum template está implementado.** O placar em `preview.html` está zerado nas
   duas colunas (implementada e em produção). O status mora no dicionário `STATUS` em
   `make_preview.py`.
-- **Domínio de envio indefinido.** Os rodapés citam `suporte@anti.com.br`, que é
-  domínio de terceiro — precisa ser trocado quando o domínio da marca for decidido.
-  O endereço e os dados legais da emissora são variáveis de template.
+- **Subdomínio de marketing não decidido.** `mkt.sejaanti.com.br` é proposta, não
+  decisão. O corporativo e o transacional já estão definidos.
+- **Régua do sacado em construção.** O sacado é onde mora o risco da operação e o
+  pagamento dele passa pela conta escrow, o que faz dele destinatário de comunicação
+  — com peso jurídico sobre o domicílio de pagamento. A régua ainda não existe; o que
+  se sabe e o que precisa ser decidido está em `preview.html`.
 - **`testdata/` cobre só o email 04.** Os demais precisam do JSON de exemplo.
 - **Idioma único.** O copy está em PT-BR; o app é bilíngue. Falta decidir se o email
   segue o idioma do perfil.

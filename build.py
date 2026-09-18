@@ -137,7 +137,7 @@ def render(e):
     <div style="font-family:{F_MONO};font-weight:700;font-size:9px;color:{MUTED};text-transform:uppercase;letter-spacing:0.14em;padding-bottom:10px;">ANTI &middot; UMA EMPRESA DUX</div>
     <div style="font-family:{F_BODY};font-size:11px;line-height:1.7;color:{MUTED};">
       {footer_note}<br><br>
-      Precisa de ajuda? Fale com a gente em <a href="mailto:suporte@anti.com.br" style="color:{BODY};text-decoration:underline;">suporte@anti.com.br</a>.<br>
+      Precisa de ajuda? Fale com a gente em <a href="mailto:suporte@sejaanti.com.br" style="color:{BODY};text-decoration:underline;">suporte@sejaanti.com.br</a>.<br>
       Nunca pedimos senha, PIN ou código de verificação por email, telefone ou WhatsApp.
     </div>
     <div style="font-family:{F_MONO};font-size:10px;line-height:1.7;color:#b4b4ba;padding-top:14px;">
