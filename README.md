@@ -78,6 +78,12 @@ ao cliente sem revisão de texto, e para que o HTML tenha uma origem só.
 A via de volta é o Event Webhook: o SendGrid chama nosso endpoint a cada entrega,
 abertura, bounce ou marcação de spam. É o que diz se a régua está funcionando.
 
+O passo 2 acontece primeiro em arquivo: os layouts são gerados localmente aqui, e é
+esse material que depois vai para o Figma, para revisão, e para o SendGrid, para
+envio. Versionar num repositório próprio é o que tira as comunicações da máquina de
+uma pessoa só — qualquer um do time lê o texto aprovado, vê o HTML exato que está no
+ar e acompanha no histórico o que mudou a cada revisão de copy.
+
 ## Domínios de envio
 
 Reputação de entrega é medida por domínio, então os três públicos ficam separados na

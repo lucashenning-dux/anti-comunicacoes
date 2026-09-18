@@ -228,6 +228,7 @@ workflow_block = f"""<div class="block" id="workflow">
   <h2 class="sec">O workflow — do pedido ao disparo</h2>
   <p class="lede" style="margin:0 0 30px;">Cinco passos, com dono definido em cada um. O desenho existe para que nenhuma comunicação chegue ao cliente sem ter passado pela revisão de texto, e para que o HTML tenha uma origem só.</p>
   <ol class="flow">{flow_steps}</ol>
+  <div class="note" style="border-left-color:var(--conta);"><b>Onde isso tudo mora</b><p>As comunicações vivem num repositório próprio no GitHub, separado do código do aplicativo — só o copy, o gerador, os layouts e os dados de teste. O passo 2 acontece primeiro em arquivo: o Claude gera os layouts localmente, e é esse material que depois vai para o Figma, para revisão, e para o SendGrid, para envio. Versionar é o que tira as comunicações da máquina de uma pessoa só: qualquer um do time abre o repositório, lê o texto aprovado, vê o HTML exato que está no ar e acompanha no histórico o que mudou em cada template a cada revisão de copy.</p></div>
   <div class="note" style="border-left-color:var(--ant);"><b>A via de volta</b><p>A chamada de API é a ida: o sistema pede ao SendGrid que envie. A volta é o <i>Event Webhook</i>, que o SendGrid chama de volta no nosso endpoint a cada entrega, abertura, bounce ou marcação de spam. É essa via que diz se a régua está funcionando de verdade — e é dela que sai o número que preenche as duas últimas colunas da tabela adiante.</p></div>
 </div>
 
@@ -334,7 +335,7 @@ table.regua td {{ padding:13px 14px 13px 0; border-bottom:1px solid var(--line-2
 .step h4 {{ font-family:var(--f-dis); font-size:15.5px; font-weight:700; margin:8px 0 8px; }}
 .step p {{ margin:0; font-size:13.5px; color:var(--body); }}
 .step .kicker {{ color:var(--acid-deep); }}
-.note {{ margin-top:24px; border-left:3px solid var(--err); background:var(--card); border-radius:0 12px 12px 0; padding:18px 22px; }}
+.note {{ margin-top:22px; border-left:3px solid var(--err); background:var(--card); border-radius:0 12px 12px 0; padding:18px 22px; }}
 .note b {{ font-family:var(--f-mono); font-size:10px; text-transform:uppercase; letter-spacing:.12em; color:var(--err); display:block; margin-bottom:6px; }}
 .note p {{ margin:0; font-size:14px; color:var(--body); }}
 .files {{ font-family:var(--f-mono); font-size:12.5px; color:var(--body); background:var(--card); border:1px solid var(--line); border-radius:12px; padding:18px 22px; margin-top:24px; overflow-x:auto; white-space:pre; line-height:1.8; }}
