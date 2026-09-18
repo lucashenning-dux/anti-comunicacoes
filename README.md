@@ -1,4 +1,4 @@
-# ANTI · Guideline das Regras de Comunicação
+# ANTI · Guideline das Réguas de Comunicação
 
 Régua de emails transacionais do ANTI: o copy, o layout e as regras de quando cada
 mensagem dispara. Dezoito emails de serviço, um para cada mudança de estado que o
@@ -60,9 +60,16 @@ não é escrever HTML.
 As variáveis estão em Handlebars (`{{first_name}}`), que é o formato dos Dynamic
 Templates — não as substitution tags antigas do SendGrid.
 
+## As duas réguas
+
+| Régua | Quem recebe | Status |
+|---|---|---|
+| Régua do app | o cedente, quem tem conta no ANTI | em construção — 18 desenhadas, nenhuma implementada |
+| Régua do sacado | o sacado, devedor da nota, sem conta no app | em construção — a definir, com jurídico |
+
 ## Workflow
 
-Cinco passos, com dono em cada um. A ordem existe para que nenhuma comunicação chegue
+As duas réguas seguem o mesmo caminho de produção. Cinco passos, com dono em cada um. A ordem existe para que nenhuma comunicação chegue
 ao cliente sem revisão de texto, e para que o HTML tenha uma origem só.
 
 1. **Solicitação** (Dux) — o pedido da comunicação, dizendo em que etapa da jornada

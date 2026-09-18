@@ -226,7 +226,26 @@ flow_steps = "".join(
 
 workflow_block = f"""<div class="block" id="workflow">
   <h2 class="sec">O workflow — do pedido ao disparo</h2>
-  <p class="lede" style="margin:0 0 30px;">Cinco passos, com dono definido em cada um. O desenho existe para que nenhuma comunicação chegue ao cliente sem ter passado pela revisão de texto, e para que o HTML tenha uma origem só.</p>
+  <p class="lede" style="margin:0 0 30px;">São duas réguas, com públicos e responsabilidades diferentes, e as duas seguem o mesmo caminho de produção: cinco passos, com dono definido em cada um. O desenho existe para que nenhuma comunicação chegue ao destinatário sem ter passado pela revisão de texto, e para que o HTML tenha uma origem só.</p>
+  <div class="tablewrap"><table class="duas">
+    <thead><tr><th>Régua</th><th>Quem recebe</th><th>O que cobre</th><th>Status</th></tr></thead>
+    <tbody>
+      <tr>
+        <td class="d-name"><a href="#guia">Régua do app</a></td>
+        <td>O cedente — quem tem conta no ANTI</td>
+        <td>As dezoito comunicações deste documento, da criação da conta à liquidação da operação</td>
+        <td><span class="pill-wip">Em construção</span><span class="d-note">desenhadas, nenhuma implementada</span></td>
+      </tr>
+      <tr>
+        <td class="d-name"><a href="#sacado">Régua do sacado</a></td>
+        <td>O sacado — o devedor da nota, sem conta no app</td>
+        <td>Confirmação da operação, notificação da cessão, vencimento e pagamento</td>
+        <td><span class="pill-wip">Em construção</span><span class="d-note">a definir, com jurídico</span></td>
+      </tr>
+    </tbody>
+  </table></div>
+
+  <h3 class="flow-title">Os cinco passos</h3>
   <ol class="flow">{flow_steps}</ol>
   <div class="note" style="border-left-color:var(--conta);"><b>Onde isso tudo mora</b><p>As comunicações vivem num repositório próprio no GitHub, separado do código do aplicativo — só o copy, o gerador, os layouts e os dados de teste. O passo 2 acontece primeiro em arquivo: o Claude gera os layouts localmente, e é esse material que depois vai para o Figma, para revisão, e para o SendGrid, para envio. Versionar é o que tira as comunicações da máquina de uma pessoa só: qualquer um do time abre o repositório, lê o texto aprovado, vê o HTML exato que está no ar e acompanha no histórico o que mudou em cada template a cada revisão de copy.</p></div>
   <div class="note" style="border-left-color:var(--ant);"><b>A via de volta</b><p>A chamada de API é a ida: o sistema pede ao SendGrid que envie. A volta é o <i>Event Webhook</i>, que o SendGrid chama de volta no nosso endpoint a cada entrega, abertura, bounce ou marcação de spam. É essa via que diz se a régua está funcionando de verdade — e é dela que sai o número que preenche as duas últimas colunas da tabela adiante.</p></div>
@@ -236,7 +255,7 @@ workflow_block = f"""<div class="block" id="workflow">
 
 cards = "".join(card(e) for e in regua)
 
-PAGE = f"""<title>Guideline das Regras de Comunicação</title>
+PAGE = f"""<title>Guideline das Réguas de Comunicação</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500;700&family=Inter:wght@400;500;600&display=swap">
 <style>
 :root {{
@@ -419,6 +438,18 @@ ol.flow {{ list-style:none; margin:0; padding:0; counter-reset:f; display:flex; 
 .flow-body {{ margin:0; font-size:14.5px; color:var(--body); max-width:62ch; }}
 .flow-body code {{ background:var(--line-2); border-radius:5px; padding:2px 6px; font-size:12.5px; color:var(--ink-2); }}
 
+
+/* ---- as duas réguas ---- */
+table.duas {{ width:100%; border-collapse:collapse; font-size:13.5px; min-width:640px; margin-bottom:38px; }}
+table.duas th {{ text-align:left; font-family:var(--f-mono); font-weight:700; font-size:9.5px; text-transform:uppercase; letter-spacing:.12em; color:var(--mute); padding:0 18px 11px 0; border-bottom:1px solid var(--ink); }}
+table.duas td {{ padding:16px 18px 16px 0; border-bottom:1px solid var(--line-2); vertical-align:top; color:var(--body); }}
+.d-name a {{ font-family:var(--f-dis); font-weight:700; font-size:15px; color:var(--ink); text-decoration:none; border-bottom:1px solid var(--acid-deep); padding-bottom:2px; white-space:nowrap; }}
+.d-name a:hover {{ background:var(--acid); color:#171717; }}
+.d-name a:focus-visible {{ outline:2px solid var(--acid-deep); outline-offset:3px; }}
+.pill-wip {{ display:inline-block; font-family:var(--f-mono); font-size:9.5px; font-weight:700; text-transform:uppercase; letter-spacing:.09em; color:var(--kyc); border:1px dashed currentColor; border-radius:100px; padding:4px 10px; white-space:nowrap; }}
+.d-note {{ display:block; font-family:var(--f-mono); font-size:10.5px; color:var(--mute); margin-top:7px; }}
+.flow-title {{ font-family:var(--f-mono); font-weight:700; font-size:9.5px; text-transform:uppercase; letter-spacing:.14em; color:var(--mute); margin:0 0 4px; }}
+
 @media (max-width:820px) {{
   .anatomy, .stage {{ grid-template-columns:1fr; gap:24px; }}
   .mails {{ grid-template-columns:1fr; }}
@@ -430,7 +461,7 @@ ol.flow {{ list-style:none; margin:0; padding:0; counter-reset:f; display:flex; 
 <div class="shell">
 <header class="hero">
   <div class="kicker">ANTI · Guideline · v1 · set 2026</div>
-  <h1>Guideline das<br><em>regras de comunicação</em>.</h1>
+  <h1>Guideline das<br><em>réguas de comunicação</em>.</h1>
   <p class="lede">De qual domínio sai cada mensagem, por qual caminho ela é aprovada, como ela é construída e em que ponto da jornada ela dispara. No centro, dezoito emails de serviço — um para cada mudança de estado que o app já comunica na Central de Notificações. Mesmo gatilho, mesma taxonomia, mesmo texto: o email é a versão do aviso que sobrevive fora do app, na caixa de entrada do cedente.</p>
   <div class="facts">
     <div class="fact"><b>18</b><span>templates</span></div>
@@ -507,7 +538,7 @@ ol.flow {{ list-style:none; margin:0; padding:0; counter-reset:f; display:flex; 
 └── testdata/               JSON de exemplo para o campo Test Data</div>
 </div>
 
-<div class="block">
+<div class="block" id="sacado">
   <h2 class="sec">Régua do sacado &mdash; risco sacado</h2>
   <div class="wip">
     <span class="wip-badge">Em construção</span>
