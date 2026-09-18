@@ -31,6 +31,13 @@ F_MONO   = "'IBM Plex Mono','SFMono-Regular',Consolas,'Courier New',monospace"
 
 ACCENT = {"neutral": INK, "success": SUCCESS, "warning": WARNING, "error": ERROR}
 
+# Marca no cabecalho. Cliente de email nao le SVG e nao aceita arquivo local:
+# a imagem precisa de uma URL publica. O asset de 2x esta em assets/ — suba-o
+# para a biblioteca de imagens do SendGrid (ou para o CDN da casa) e troque a
+# URL abaixo, para o email carregar 4 KB em vez do master de 84 KB.
+LOGO_URL = "https://brandbook.sejaanti.com.br/assets/download/anti-icone-branco.png"
+LOGO_W, LOGO_H = 52, 32
+
 # ---------------------------------------------------------------- blocos
 def eyebrow(text):
     return (f'<div style="font-family:{F_MONO};font-weight:700;font-size:10px;'
@@ -122,7 +129,7 @@ def render(e):
   <!-- HEADER -->
   <tr><td bgcolor="{INK}" style="background:{INK};border-radius:20px 20px 0 0;padding:22px 40px;">
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr>
-      <td align="left" style="font-family:{F_TITLE};font-weight:700;font-size:19px;letter-spacing:-0.3px;color:{WHITE};">ANTI<span style="color:{YELLOW};">.</span></td>
+      <td align="left" style="line-height:0;font-size:0;"><img src="{LOGO_URL}" width="{LOGO_W}" height="{LOGO_H}" alt="ANTI" style="display:block;width:{LOGO_W}px;height:{LOGO_H}px;border:0;outline:none;text-decoration:none;font-family:{F_TITLE};font-weight:700;font-size:19px;letter-spacing:-0.3px;color:{WHITE};"></td>
       <td align="right" style="font-family:{F_MONO};font-weight:700;font-size:9px;color:rgba(255,255,255,0.45);text-transform:uppercase;letter-spacing:0.14em;">{e["header_tag"]}</td>
     </tr></table>
   </td></tr>

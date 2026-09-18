@@ -27,7 +27,15 @@ SAMPLE = {
  "company_address":"Rua Comendador Araújo, 143 · Curitiba, PR",
 }
 
+import base64
+# A pagina publicada bloqueia imagem de host externo, entao o preview embute a
+# marca como data URI. Os arquivos de dist/ seguem com a URL publica de verdade.
+LOGO_SRC = "https://brandbook.sejaanti.com.br/assets/download/anti-icone-branco.png"
+LOGO_DATA = "data:image/png;base64," + base64.b64encode(
+    (ROOT / "assets" / "anti-icone-branco-2x.png").read_bytes()).decode()
+
 def fill(t):
+    t = t.replace(LOGO_SRC, LOGO_DATA)
     return re.sub(r"\{\{\{?\s*([a-z_]+)\s*\}?\}\}", lambda m: SAMPLE.get(m.group(1), m.group(0)), t)
 
 GROUPS = [

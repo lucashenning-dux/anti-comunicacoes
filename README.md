@@ -27,8 +27,9 @@ build.py          gerador — o copy, os gatilhos e a régua moram aqui
 regua.json        índice gerado: gatilho, tela, assunto, preheader, variáveis
 make_preview.py   gera a página de revisão
 preview.html      página de revisão (gerada)
-dist/             18 HTML autocontidos, prontos para colar no SendGrid (gerado)
+dist/             18 HTML prontos para colar no SendGrid (gerado)
 testdata/         JSON de exemplo para o campo Test Data do SendGrid
+assets/           a marca do cabeçalho, em SVG e em PNG 2x para email
 ```
 
 `dist/` é gerado, mas está versionado de propósito: é o arquivo que a pessoa copia e
@@ -91,6 +92,17 @@ envio. Versionar num repositório próprio é o que tira as comunicações da m�
 uma pessoa só — qualquer um do time lê o texto aprovado, vê o HTML exato que está no
 ar e acompanha no histórico o que mudou a cada revisão de copy.
 
+## A marca no cabeçalho
+
+O ícone vem do brandbook (`brandbook.sejaanti.com.br`), na versão branca, exibido a
+52×32 e servido em 2x para não serrilhar em tela retina. O arquivo está em
+`assets/anti-icone-branco-2x.png`, com 4 KB.
+
+A URL fica na constante `LOGO_URL`, no topo do `build.py`. Hoje ela aponta para o
+master do brandbook, que funciona de imediato mas pesa 84 KB. Antes de ir para
+produção, suba `assets/anti-icone-branco-2x.png` para a biblioteca de imagens do
+SendGrid e troque a constante — o email passa a carregar 4 KB.
+
 ## Domínios de envio
 
 Reputação de entrega é medida por domínio, então os três públicos ficam separados na
@@ -118,8 +130,12 @@ o motor do Word.
 - **Tabelas para estrutura.** Nada de `div` posicionada, flexbox ou grid.
 - **Estilo inline no elemento.** O único `<style>` no `<head>` existe para a media
   query, que é a única regra que não dá para inlinear.
-- **Nenhum arquivo externo.** Sem CSS separado, sem imagem hospedada. Cliente de email
-  não busca recurso externo: o Gmail remove `<link>` e o Outlook o ignora.
+- **Nenhum CSS externo.** Cliente de email não busca folha de estilo: o Gmail remove
+  `<link>` e o Outlook o ignora. Um `.css` ao lado do HTML é sempre descartado.
+- **Imagem só a marca, e sempre com `alt`.** A única imagem do template é o ícone do
+  cabeçalho, que precisa de URL pública — arquivo local não chega ao destinatário. Boa
+  parte dos clientes bloqueia imagem por padrão, então o `alt` do ícone é estilizado
+  para que o nome ANTI apareça em branco mesmo com a imagem bloqueada.
 - **600px de largura**, com fallback para 100% abaixo de 620px.
 - **Fonte com pilha de fallback real.** Gmail e Outlook não carregam webfont; o email
   chega em Helvetica ou Arial, e o layout precisa se manter assim.
