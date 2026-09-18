@@ -130,23 +130,19 @@ for e in regua:
 sections = []
 for i, (g, sub, note) in enumerate(GROUPS, 1):
     items = by_group.get(g, [])
-    rows = "".join(
-      f"<tr><td class='c-id'>{e['id'].split('-')[0]}</td>"
-      f"<td class='c-trig'>{html.escape(e['trigger'])}</td>"
-      f"<td class='c-scr'><code>{html.escape(e['screen'])}</code></td>"
-      f"<td class='c-sub'>{html.escape(e['subject'])}</td></tr>" for e in items)
+    chips = "".join(
+      f'<a class="chip" href="#{e["id"]}">{html.escape(NAME[e["id"]])}</a>' for e in items)
     sections.append(f"""<section class="stage">
   <div class="stage-head">
     <span class="stage-n">Etapa {i}</span>
     <h3>{g}</h3>
     <p class="stage-sub">{sub}</p>
-    <p class="stage-note">{note}</p>
     <span class="stage-count">{len(items)} emails</span>
   </div>
-  <div class="tablewrap"><table class="regua">
-    <thead><tr><th>#</th><th>Gatilho no app</th><th>Tela</th><th>Assunto</th></tr></thead>
-    <tbody>{rows}</tbody>
-  </table></div>
+  <div class="stage-body">
+    <p class="stage-note">{note}</p>
+    <div class="chips">{chips}</div>
+  </div>
 </section>""")
 
 anatomy_rows = "".join(
@@ -172,7 +168,8 @@ for gi, (g, gsub, _n) in enumerate(GROUPS, 1):
         dev, prod = STATUS[e["id"]]
         guide_rows.append(
           f'<tr>'
-          f'<td class="g-name"><span class="g-num">{e["id"].split("-")[0]}</span>{html.escape(NAME[e["id"]])}</td>'
+          f'<td class="g-name"><span class="g-num">{e["id"].split("-")[0]}</span>{html.escape(NAME[e["id"]])}'
+          f'<span class="g-sub">{html.escape(e["subject"])}</span></td>'
           f'<td class="g-trig">{html.escape(e["trigger"])}<span class="g-scr">{html.escape(e["screen"])}</span></td>'
           f'<td class="g-pers"><span class="pers {"p-yes" if pv else "p-no"}">{"Sim" if pv else "Não"}</span>'
           f'<span class="pers-why">{html.escape(pwhy)}</span></td>'
@@ -207,9 +204,38 @@ guide_table = f"""<div class="block" id="guia">
   <p class="legend"><span class="mark no">&#10005;</span> não construída &nbsp;·&nbsp; <span class="mark yes">&#10003;</span> pronta &nbsp;·&nbsp; para atualizar o placar, edite <code>STATUS</code> em <code>make_preview.py</code> e rode o script.</p>
 </div>"""
 
+# ---------- workflow ----------
+FLUXO = [
+ ("Solicitação", "Dux",
+  "O pedido de uma comunicação nova — ou a mudança de uma existente — é feito no Claude, dizendo em que etapa da jornada ela entra e o que precisa ser dito. É aqui que se decide se a comunicação deve mesmo existir."),
+ ("Materialização no Figma", "Claude",
+  "A comunicação vira layout no arquivo do Figma, em dois estados: com as variáveis à mostra e com dados de teste preenchidos. Serve para a conversa acontecer sobre algo visível, não sobre descrição."),
+ ("Revisão interna do texto", "Dux",
+  "O time lê o copy e responde a uma pergunta só: isso é o que a pessoa precisa ouvir neste ponto da jornada? Tom, clareza e o encaixe com a etapa. É o passo que aprova o texto."),
+ ("Exportação para o SendGrid", "Dux",
+  "O HTML de produção sai do gerador deste repositório — não do Figma — e é colado no Code Editor de um Dynamic Template. Cada comunicação passa a ter um <code>template_id</code> próprio."),
+ ("Disparo por chamada de API", "Backend",
+  "No momento em que o evento acontece, o backend chama a Mail Send API com o <code>template_id</code> e os parâmetros daquela comunicação, em <code>dynamic_template_data</code>. O mesmo evento que cria a notificação no app dispara o email."),
+]
+
+flow_steps = "".join(
+  f'<li class="flow-step"><div class="flow-head"><span class="flow-n">{i}</span>'
+  f'<h4>{t}</h4><span class="flow-owner">{who}</span></div>'
+  f'<p class="flow-body">{d}</p></li>'
+  for i, (t, who, d) in enumerate(FLUXO, 1))
+
+workflow_block = f"""<div class="block" id="workflow">
+  <h2 class="sec">O workflow — do pedido ao disparo</h2>
+  <p class="lede" style="margin:0 0 30px;">Cinco passos, com dono definido em cada um. O desenho existe para que nenhuma comunicação chegue ao cliente sem ter passado pela revisão de texto, e para que o HTML tenha uma origem só.</p>
+  <ol class="flow">{flow_steps}</ol>
+  <div class="note" style="border-left-color:var(--ant);"><b>A via de volta</b><p>A chamada de API é a ida: o sistema pede ao SendGrid que envie. A volta é o <i>Event Webhook</i>, que o SendGrid chama de volta no nosso endpoint a cada entrega, abertura, bounce ou marcação de spam. É essa via que diz se a régua está funcionando de verdade — e é dela que sai o número que preenche as duas últimas colunas da tabela adiante.</p></div>
+</div>
+
+"""
+
 cards = "".join(card(e) for e in regua)
 
-PAGE = f"""<title>Régua de Emails ANTI</title>
+PAGE = f"""<title>Guideline das Regras de Comunicação</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500;700&family=Inter:wght@400;500;600&display=swap">
 <style>
 :root {{
@@ -372,18 +398,39 @@ table.guide tfoot th {{ text-align:left; font-family:var(--f-mono); font-size:10
 .wip-col.q li::before {{ content:"?"; color:var(--kyc); font-weight:700; }}
 .wip-col li b {{ color:var(--ink); font-weight:600; }}
 
+
+/* ---- chips das etapas ---- */
+.stage-body {{ display:flex; flex-direction:column; gap:16px; }}
+.chips {{ display:flex; flex-wrap:wrap; gap:7px; }}
+.chip {{ font-family:var(--f-mono); font-size:10.5px; color:var(--ink-2); text-decoration:none; border:1px solid var(--line); border-radius:100px; padding:6px 12px; transition:background .12s,color .12s; }}
+.chip:hover {{ background:var(--ink); color:var(--paper); border-color:var(--ink); }}
+.chip:focus-visible {{ outline:2px solid var(--acid-deep); outline-offset:2px; }}
+.g-sub {{ display:block; font-family:var(--f-body); font-weight:400; font-size:12px; color:var(--mute); margin-top:4px; max-width:26ch; }}
+
+/* ---- workflow ---- */
+ol.flow {{ list-style:none; margin:0; padding:0; counter-reset:f; display:flex; flex-direction:column; }}
+.flow-step {{ display:grid; grid-template-columns:minmax(0,320px) minmax(0,1fr); gap:32px; padding:24px 0; border-top:1px solid var(--line); align-items:start; }}
+.flow-step:first-child {{ border-top:1px solid var(--ink); }}
+.flow-head {{ display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; }}
+.flow-n {{ font-family:var(--f-mono); font-weight:700; font-size:11px; color:var(--acid-deep); font-variant-numeric:tabular-nums; }}
+.flow-head h4 {{ font-family:var(--f-dis); font-weight:700; font-size:19px; letter-spacing:-.4px; color:var(--ink); margin:0; }}
+.flow-owner {{ font-family:var(--f-mono); font-size:9.5px; font-weight:700; text-transform:uppercase; letter-spacing:.1em; color:var(--mute); border:1px solid var(--line); border-radius:100px; padding:4px 10px; }}
+.flow-body {{ margin:0; font-size:14.5px; color:var(--body); max-width:62ch; }}
+.flow-body code {{ background:var(--line-2); border-radius:5px; padding:2px 6px; font-size:12.5px; color:var(--ink-2); }}
+
 @media (max-width:820px) {{
   .anatomy, .stage {{ grid-template-columns:1fr; gap:24px; }}
   .mails {{ grid-template-columns:1fr; }}
+  .flow-step {{ grid-template-columns:1fr; gap:14px; }}
   .g-trig, .g-pers {{ max-width:none; }}
 }}
 </style>
 
 <div class="shell">
 <header class="hero">
-  <div class="kicker">ANTI · Emails transacionais · v1 · set 2026</div>
-  <h1>Régua de emails<br>que <em>acompanha</em> a tela.</h1>
-  <p class="lede">Dezoito emails de serviço, um para cada mudança de estado que o app já comunica na Central de Notificações. Mesmo gatilho, mesma taxonomia, mesmo texto — o email é a versão do aviso que sobrevive fora do app, na caixa de entrada do cedente.</p>
+  <div class="kicker">ANTI · Guideline · v1 · set 2026</div>
+  <h1>Guideline das<br><em>regras de comunicação</em>.</h1>
+  <p class="lede">De qual domínio sai cada mensagem, por qual caminho ela é aprovada, como ela é construída e em que ponto da jornada ela dispara. No centro, dezoito emails de serviço — um para cada mudança de estado que o app já comunica na Central de Notificações. Mesmo gatilho, mesma taxonomia, mesmo texto: o email é a versão do aviso que sobrevive fora do app, na caixa de entrada do cedente.</p>
   <div class="facts">
     <div class="fact"><b>18</b><span>templates</span></div>
     <div class="fact"><b>4</b><span>etapas da jornada</span></div>
@@ -392,28 +439,6 @@ table.guide tfoot th {{ text-align:left; font-family:var(--f-mono); font-size:10
     <div class="fact"><b>0</b><span>imagens externas</span></div>
   </div>
 </header>
-
-{guide_table}
-
-<div class="block">
-  <h2 class="sec">O layout — oito blocos, um por função</h2>
-  <div class="anatomy">
-    <div class="viewport" style="height:640px;border:1px solid var(--line);border-radius:14px;border-top:1px solid var(--line);">
-      <iframe title="Anatomia do template" srcdoc="{html.escape(fill((DIST / '09-proposta-disponivel.html').read_text(encoding='utf-8')), quote=True)}"></iframe>
-    </div>
-    <ol>{anatomy_rows}</ol>
-  </div>
-</div>
-
-<div class="block">
-  <h2 class="sec">A régua — gatilho, tela, assunto</h2>
-  {"".join(sections)}
-</div>
-
-<div class="block">
-  <h2 class="sec">Os dezoito emails, com dados de exemplo</h2>
-  <div class="mails">{cards}</div>
-</div>
 
 <div class="block">
   <h2 class="sec">Domínios de envio &mdash; três remetentes, três reputações</h2>
@@ -439,6 +464,29 @@ table.guide tfoot th {{ text-align:left; font-family:var(--f-mono); font-size:10
     </div>
   </div>
   <div class="note" style="border-left-color:var(--conta);"><b>Ao configurar no SendGrid</b><p>Autentique cada domínio separadamente, e mantenha o marketing em subuser e IP próprios. O grupo de descadastro (<i>unsubscribe group</i>) existe só no marketing: email de serviço não pode cair no mesmo opt-out, porque enquanto a conta estiver ativa o cliente precisa receber o aviso de documento rejeitado e o comprovante de transferência. O <code>Reply-To</code> da régua transacional aponta para uma caixa monitorada de verdade &mdash; nada de <code>no-reply</code> que devolve bounce.</p></div>
+</div>
+
+{workflow_block}
+<div class="block">
+  <h2 class="sec">O layout — oito blocos, um por função</h2>
+  <div class="anatomy">
+    <div class="viewport" style="height:640px;border:1px solid var(--line);border-radius:14px;border-top:1px solid var(--line);">
+      <iframe title="Anatomia do template" srcdoc="{html.escape(fill((DIST / '09-proposta-disponivel.html').read_text(encoding='utf-8')), quote=True)}"></iframe>
+    </div>
+    <ol>{anatomy_rows}</ol>
+  </div>
+</div>
+
+<div class="block">
+  <h2 class="sec">Os tipos de comunicação — quatro etapas da jornada</h2>
+  {"".join(sections)}
+</div>
+
+{guide_table}
+
+<div class="block">
+  <h2 class="sec">Os dezoito emails, com dados de exemplo</h2>
+  <div class="mails">{cards}</div>
 </div>
 
 <div class="block">

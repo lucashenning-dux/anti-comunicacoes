@@ -1,4 +1,4 @@
-# ANTI · Comunicações
+# ANTI · Guideline das Regras de Comunicação
 
 Régua de emails transacionais do ANTI: o copy, o layout e as regras de quando cada
 mensagem dispara. Dezoito emails de serviço, um para cada mudança de estado que o
@@ -59,6 +59,24 @@ não é escrever HTML.
 
 As variáveis estão em Handlebars (`{{first_name}}`), que é o formato dos Dynamic
 Templates — não as substitution tags antigas do SendGrid.
+
+## Workflow
+
+Cinco passos, com dono em cada um. A ordem existe para que nenhuma comunicação chegue
+ao cliente sem revisão de texto, e para que o HTML tenha uma origem só.
+
+1. **Solicitação** (Dux) — o pedido da comunicação, dizendo em que etapa da jornada
+   ela entra e o que precisa dizer.
+2. **Materialização no Figma** (Claude) — vira layout, com variáveis à mostra e com
+   dados de teste.
+3. **Revisão interna do texto** (Dux) — o time aprova o copy contra a etapa da jornada.
+4. **Exportação para o SendGrid** (Dux) — o HTML sai de `dist/`, não do Figma, e vai
+   para o Code Editor de um Dynamic Template. Cada comunicação ganha um `template_id`.
+5. **Disparo por chamada de API** (backend) — no evento, o backend chama a Mail Send
+   API com o `template_id` e os parâmetros em `dynamic_template_data`.
+
+A via de volta é o Event Webhook: o SendGrid chama nosso endpoint a cada entrega,
+abertura, bounce ou marcação de spam. É o que diz se a régua está funcionando.
 
 ## Domínios de envio
 
