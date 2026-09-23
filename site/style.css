@@ -263,3 +263,12 @@ table.sacado td { padding:16px 16px 16px 0; border-bottom:1px solid var(--line-2
 code.tid { font-family:var(--f-mono); font-size:10px; color:var(--ink-2); background:var(--line-2); border-radius:5px; padding:5px 7px; display:inline-block; word-break:break-all; max-width:24ch; line-height:1.4; }
 table.sacado .grow th { text-align:left; padding:26px 0 9px; border-bottom:1px solid var(--line); }
 table.sacado .grow:first-child th { padding-top:6px; }
+
+/* ---------------- preview (imagens reais das comunicações) ---------------- */
+.prev-group { display:flex; align-items:baseline; gap:0; font-family:var(--f-dis); margin:36px 0 18px; padding-top:22px; border-top:1px solid var(--line); }
+.block > .prev-group:first-of-type { margin-top:0; padding-top:0; border-top:0; }
+.mail-shot { display:block; background:#f4f4f5; border-top:1px solid var(--line); }
+.mail-shot img { display:block; width:100%; height:auto; }
+.mail-foot { padding:14px 22px 18px; margin-top:auto; }
+.mail-foot .chip { display:inline-block; }
+.mail-pre .tid { font-size:10px; }
