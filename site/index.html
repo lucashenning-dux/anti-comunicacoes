@@ -32,7 +32,7 @@
     <div class="dom dom-2">
       <div class="dom-role">Transacional &middot; a régua</div>
       <div class="dom-addr">@sejaanti.com.br</div>
-      <p class="dom-what">Os dezoito emails deste documento. Tudo que o sistema dispara sozinho a partir de uma mudança de estado: código, KYC, proposta, liquidação, comprovante.</p>
+      <p class="dom-what">As duas réguas: os dezoito emails do app e as quinze comunicações do Risco Sacado. Tudo que o sistema dispara sozinho a partir de uma mudança de estado.</p>
       <div class="dom-rule">É o domínio mais crítico dos três. Nada de marketing passa por aqui.</div>
     </div>
     <div class="dom dom-3">
@@ -56,13 +56,13 @@
         <td class="d-name"><a href="regua-app.html">Régua do app</a></td>
         <td>O cedente — quem tem conta no ANTI</td>
         <td>As dezoito comunicações deste documento, da criação da conta à liquidação da operação</td>
-        <td><span class="pill-wip">Em construção</span><span class="d-note">desenhadas, nenhuma implementada</span></td>
+        <td><span class="pill-wip">Em revisão</span><span class="d-note">18 desenhadas, nenhuma implementada</span></td>
       </tr>
       <tr>
         <td class="d-name"><a href="regua-sacado.html">Régua do sacado</a></td>
-        <td>O sacado — o devedor da nota, sem conta no app</td>
-        <td>Confirmação da operação, notificação da cessão, vencimento e pagamento</td>
-        <td><span class="pill-wip">Em construção</span><span class="d-note">6 previstas, a validar</span></td>
+        <td>O fornecedor e o parceiro, que é o sacado</td>
+        <td>Cadastro do fornecedor, análise da operação e caminho do dinheiro, nas duas pontas</td>
+        <td><span class="pill-wip">In progress</span><span class="d-note">15 comunicações, template IDs criados</span></td>
       </tr>
     </tbody>
   </table></div>
@@ -70,7 +70,7 @@
   <h3 class="flow-title">Os cinco passos</h3>
   <div class="flowwrap"><ol class="flowmap"><li class="fm-step"><div class="fm-top"><span class="fm-n">1</span><span class="fm-owner">Dux</span></div><h4>Solicitação</h4><p>O pedido da comunicação, com a etapa da jornada em que ela entra e o que precisa dizer.</p></li><div class="fm-arrow" aria-hidden="true">→</div><li class="fm-step"><div class="fm-top"><span class="fm-n">2</span><span class="fm-owner">Claude</span></div><h4>Materialização no Figma</h4><p>Vira layout em dois estados: com as variáveis à mostra e com dados de teste preenchidos.</p></li><div class="fm-arrow" aria-hidden="true">→</div><li class="fm-step"><div class="fm-top"><span class="fm-n">3</span><span class="fm-owner">Dux</span></div><h4>Revisão do texto</h4><p>O time aprova o copy contra a etapa da jornada. É o passo que libera a comunicação.</p></li><div class="fm-arrow" aria-hidden="true">→</div><li class="fm-step"><div class="fm-top"><span class="fm-n">4</span><span class="fm-owner">Dux</span></div><h4>Exportação</h4><p>O HTML sai do repositório e vira um Dynamic Template, com <code>template_id</code> próprio.</p></li><div class="fm-arrow" aria-hidden="true">→</div><li class="fm-step"><div class="fm-top"><span class="fm-n">5</span><span class="fm-owner">Backend</span></div><h4>Disparo</h4><p>No evento, a Mail Send API é chamada com o template e os parâmetros da comunicação.</p></li></ol></div>
   <div class="note" style="border-left-color:var(--conta);"><b>Onde isso tudo mora</b><p>As comunicações vivem num repositório próprio no GitHub, separado do código do aplicativo — só o copy, o gerador, os layouts e os dados de teste. O passo 2 acontece primeiro em arquivo: o Claude gera os layouts localmente, e é esse material que depois vai para o Figma, para revisão, e para o SendGrid, para envio. Versionar é o que tira as comunicações da máquina de uma pessoa só: qualquer um do time abre o repositório, lê o texto aprovado, vê o HTML exato que está no ar e acompanha no histórico o que mudou em cada template a cada revisão de copy.</p></div>
-  <div class="note" style="border-left-color:var(--ant);"><b>A via de volta</b><p>A chamada de API é a ida: o sistema pede ao SendGrid que envie. A volta é o <i>Event Webhook</i>, que o SendGrid chama de volta no nosso endpoint a cada entrega, abertura, bounce ou marcação de spam. É essa via que diz se a régua está funcionando de verdade — e é dela que sai o número que preenche as duas últimas colunas da tabela adiante.</p></div>
+  <div class="note" style="border-left-color:var(--ant);"><b>A via de volta</b><p>A chamada de API é a ida: o sistema pede ao SendGrid que envie. A volta é o <i>Event Webhook</i>, que o SendGrid chama de volta no nosso endpoint a cada entrega, abertura, bounce ou marcação de spam. É essa via que diz se a régua está funcionando de verdade — e é dela que sai o número de implementadas que aparece na página de cada régua.</p></div>
 </div>
 
 
@@ -172,7 +172,7 @@
 <div class="block">
   <h2 class="sec">Onde está o resto</h2>
   <p class="lede" style="margin:0 0 30px;">As duas réguas, e as ferramentas que sustentam as duas.</p>
-  <div class="link-grid"><a class="link-card" href="#"><span class="link-name">Repositório</span><span class="link-what">As comunicações, o gerador e os HTML de produção</span><span class="link-url">github.com/&lt;org&gt;/anti-comunicacoes</span></a><a class="link-card" href="https://www.figma.com/design/CDkBtKsfa2uuRdEYVUDfeM" target=_blank rel=noopener><span class="link-name">Figma dos emails</span><span class="link-what">Os layouts, com variáveis e com dados de teste</span><span class="link-url">figma.com/design/CDkBtKsfa2uuRdEYVUDfeM</span></a><a class="link-card" href="https://brandbook.sejaanti.com.br/" target=_blank rel=noopener><span class="link-name">Brandbook</span><span class="link-what">A marca, os ativos e o uso correto do ícone</span><span class="link-url">brandbook.sejaanti.com.br</span></a><a class="link-card" href="https://app.sendgrid.com/" target=_blank rel=noopener><span class="link-name">SendGrid</span><span class="link-what">Onde os templates vivem e de onde os emails saem</span><span class="link-url">Email API › Dynamic Templates</span></a></div>
+  <div class="link-grid"><a class="link-card" href="#"><span class="link-name">Repositório</span><span class="link-what">As comunicações, o gerador e os HTML de produção</span><span class="link-url">github.com/&lt;org&gt;/anti-comunicacoes</span></a><a class="link-card" href="https://www.figma.com/design/CDkBtKsfa2uuRdEYVUDfeM" target=_blank rel=noopener><span class="link-name">Figma dos emails</span><span class="link-what">Os layouts, com variáveis e com dados de teste</span><span class="link-url">figma.com/design/CDkBtKsfa2uuRdEYVUDfeM</span></a><a class="link-card" href="https://www.figma.com/design/XIT0diYFNoRLVEBR02XrAx/Risco-Sacado?node-id=24-7" target=_blank rel=noopener><span class="link-name">Figma do Risco Sacado</span><span class="link-what">O fluxo do parceiro e do fornecedor no Portal ANTI</span><span class="link-url">figma.com/design/XIT0diYFNoRLVEBR02XrAx</span></a><a class="link-card" href="https://brandbook.sejaanti.com.br/" target=_blank rel=noopener><span class="link-name">Brandbook</span><span class="link-what">A marca, os ativos e o uso correto do ícone</span><span class="link-url">brandbook.sejaanti.com.br</span></a><a class="link-card" href="https://app.sendgrid.com/" target=_blank rel=noopener><span class="link-name">SendGrid</span><span class="link-what">Onde os templates vivem e de onde os emails saem</span><span class="link-url">Email API › Dynamic Templates</span></a></div>
 </div>
 
 <footer class="end">ANTI &middot; uma empresa DUX &middot; guideline das réguas de comunicação</footer>

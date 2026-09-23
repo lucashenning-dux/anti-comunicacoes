@@ -254,3 +254,12 @@ table.sacado td { padding:16px 16px 16px 0; border-bottom:1px solid var(--line-2
   .topnav { flex-direction:column; align-items:flex-start; gap:12px; }
   .s-name, .s-when, .s-acao, .s-vars { max-width:none; }
 }
+
+/* ---- risco sacado: quem recebe + template id ---- */
+.quem { display:inline-block; font-family:var(--f-mono); font-size:9px; font-weight:700; text-transform:uppercase; letter-spacing:.08em; padding:4px 9px; border-radius:100px; border:1px solid currentColor; white-space:nowrap; }
+.quem-F { color:var(--ant); }
+.quem-P { color:var(--conta); }
+.s-quem { white-space:nowrap; }
+code.tid { font-family:var(--f-mono); font-size:10px; color:var(--ink-2); background:var(--line-2); border-radius:5px; padding:5px 7px; display:inline-block; word-break:break-all; max-width:24ch; line-height:1.4; }
+table.sacado .grow th { text-align:left; padding:26px 0 9px; border-bottom:1px solid var(--line); }
+table.sacado .grow:first-child th { padding-top:6px; }

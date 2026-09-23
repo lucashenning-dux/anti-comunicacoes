@@ -242,13 +242,13 @@ workflow_block = f"""<div class="block" id="workflow">
         <td class="d-name"><a href="regua-app.html">Régua do app</a></td>
         <td>O cedente — quem tem conta no ANTI</td>
         <td>As dezoito comunicações deste documento, da criação da conta à liquidação da operação</td>
-        <td><span class="pill-wip">Em construção</span><span class="d-note">desenhadas, nenhuma implementada</span></td>
+        <td><span class="pill-wip">Em revisão</span><span class="d-note">18 desenhadas, nenhuma implementada</span></td>
       </tr>
       <tr>
         <td class="d-name"><a href="regua-sacado.html">Régua do sacado</a></td>
-        <td>O sacado — o devedor da nota, sem conta no app</td>
-        <td>Confirmação da operação, notificação da cessão, vencimento e pagamento</td>
-        <td><span class="pill-wip">Em construção</span><span class="d-note">6 previstas, a validar</span></td>
+        <td>O fornecedor e o parceiro, que é o sacado</td>
+        <td>Cadastro do fornecedor, análise da operação e caminho do dinheiro, nas duas pontas</td>
+        <td><span class="pill-wip">In progress</span><span class="d-note">15 comunicações, template IDs criados</span></td>
       </tr>
     </tbody>
   </table></div>
@@ -256,7 +256,7 @@ workflow_block = f"""<div class="block" id="workflow">
   <h3 class="flow-title">Os cinco passos</h3>
   <div class="flowwrap"><ol class="flowmap">{flow_steps}</ol></div>
   <div class="note" style="border-left-color:var(--conta);"><b>Onde isso tudo mora</b><p>As comunicações vivem num repositório próprio no GitHub, separado do código do aplicativo — só o copy, o gerador, os layouts e os dados de teste. O passo 2 acontece primeiro em arquivo: o Claude gera os layouts localmente, e é esse material que depois vai para o Figma, para revisão, e para o SendGrid, para envio. Versionar é o que tira as comunicações da máquina de uma pessoa só: qualquer um do time abre o repositório, lê o texto aprovado, vê o HTML exato que está no ar e acompanha no histórico o que mudou em cada template a cada revisão de copy.</p></div>
-  <div class="note" style="border-left-color:var(--ant);"><b>A via de volta</b><p>A chamada de API é a ida: o sistema pede ao SendGrid que envie. A volta é o <i>Event Webhook</i>, que o SendGrid chama de volta no nosso endpoint a cada entrega, abertura, bounce ou marcação de spam. É essa via que diz se a régua está funcionando de verdade — e é dela que sai o número que preenche as duas últimas colunas da tabela adiante.</p></div>
+  <div class="note" style="border-left-color:var(--ant);"><b>A via de volta</b><p>A chamada de API é a ida: o sistema pede ao SendGrid que envie. A volta é o <i>Event Webhook</i>, que o SendGrid chama de volta no nosso endpoint a cada entrega, abertura, bounce ou marcação de spam. É essa via que diz se a régua está funcionando de verdade — e é dela que sai o número de implementadas que aparece na página de cada régua.</p></div>
 </div>
 
 """
@@ -266,6 +266,8 @@ cards = "".join(card(e) for e in regua)
 # ============================================================ o site
 
 SITE = ROOT / "site"
+
+FIGMA_RS = "https://www.figma.com/design/XIT0diYFNoRLVEBR02XrAx/Risco-Sacado?node-id=24-7"
 
 FONTS = ('<link rel="stylesheet" href="https://fonts.googleapis.com/css2?'
          'family=IBM+Plex+Sans:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500;700'
@@ -309,6 +311,8 @@ LINKS = [
   ("Figma dos emails", "Os layouts, com variáveis e com dados de teste",
    "figma.com/design/CDkBtKsfa2uuRdEYVUDfeM",
    "https://www.figma.com/design/CDkBtKsfa2uuRdEYVUDfeM"),
+  ("Figma do Risco Sacado", "O fluxo do parceiro e do fornecedor no Portal ANTI",
+   "figma.com/design/XIT0diYFNoRLVEBR02XrAx", FIGMA_RS),
   ("Brandbook", "A marca, os ativos e o uso correto do ícone",
    "brandbook.sejaanti.com.br", "https://brandbook.sejaanti.com.br/"),
   ("SendGrid", "Onde os templates vivem e de onde os emails saem",
@@ -386,50 +390,109 @@ app = f'''<header class="hero pagehero">
 '''
 
 # ------------------------------------------------------------ régua do sacado
+
+# As 15 comunicacoes do Risco Sacado, com o template_id que ja existe no SendGrid.
+# fluxo: FRS = cadastro do fornecedor · PFS = operacao no portal · RS = cadastro em duas etapas
+# quem: F = fornecedor (vende a nota) · P = parceiro, que e o sacado (analisa e paga)
 SACADO = [
- dict(nome="Confirmação da operação", quando="O cedente informa o sacado e envia a solicitação (telas de informar sacado e solicitação enviada; pedido em OT3)",
-      para="Contato financeiro do sacado", acao="Confirmar a nota e o valor",
-      vars=["sacado_name","sacado_contact","cedente_name","order_id","invoice_number","gross_amount","due_date","confirm_url","expires_at"]),
- dict(nome="Lembrete de confirmação", quando="O prazo de confirmação está acabando e o sacado não respondeu",
-      para="Contato financeiro do sacado", acao="Confirmar antes do prazo",
-      vars=["sacado_name","cedente_name","order_id","confirm_url","hours_left"]),
- dict(nome="Notificação da cessão", quando="Contrato assinado — o crédito muda de titular",
-      para="Contato financeiro e jurídico do sacado", acao="Registrar o novo domicílio de pagamento",
-      vars=["sacado_name","cedente_name","invoice_number","gross_amount","due_date","escrow_account","assignment_date"]),
- dict(nome="Lembrete de vencimento", quando="Alguns dias antes da data de vencimento da nota",
-      para="Contato financeiro do sacado", acao="Pagar no domicílio correto",
-      vars=["sacado_name","invoice_number","amount","due_date","escrow_account","boleto_url"]),
- dict(nome="Confirmação de pagamento", quando="O pagamento é identificado na conta escrow",
-      para="Contato financeiro do sacado", acao="Nenhuma — é recibo",
-      vars=["sacado_name","invoice_number","amount","paid_at","receipt_url"]),
- dict(nome="Operação encerrada sem efeito", quando="A operação é cancelada depois de o sacado já ter sido contatado",
-      para="Contato financeiro do sacado", acao="Nenhuma — desfaz a instrução anterior",
-      vars=["sacado_name","cedente_name","order_id","cancel_reason"]),
+ dict(cod="RS1",    nome="Cadastro 1 de 2", fluxo="RS", quem="F",
+      tid="d-5b20309bdf6b477fa6b5a50b3667000b",
+      quando="O fornecedor conclui a primeira etapa do cadastro público",
+      vars=["fornecedor_razao_social","fornecedor_cnpj","continuar_url","etapa_atual","etapas_total"]),
+ dict(cod="RS2",    nome="Cadastro 2 de 2", fluxo="RS", quem="F",
+      tid="d-e2972a4488a24ef9a60ee96470890ca3",
+      quando="O fornecedor conclui a segunda etapa e envia o cadastro",
+      vars=["fornecedor_razao_social","fornecedor_cnpj","portal_url","prazo_analise"]),
+ dict(cod="FRS1",   nome="Convite", fluxo="FRS", quem="F",
+      tid="d-df076170993449039a972802cde7bbf5",
+      quando="O parceiro importa a carteira ou cadastra um fornecedor — ele entra como pré-cadastro, sem acesso",
+      vars=["fornecedor_razao_social","fornecedor_cnpj","parceiro_nome","convite_url","expira_em"]),
+ dict(cod="FRS1",   nome="Cadastro em análise", fluxo="FRS", quem="F",
+      tid="d-68534294d64145d1bc45ef348d7cfba0",
+      quando="O cadastro do fornecedor entra na fila de análise",
+      vars=["fornecedor_razao_social","protocolo","enviado_em","prazo_analise"]),
+ dict(cod="FRS2",   nome="Cadastro aprovado", fluxo="FRS", quem="F",
+      tid="d-48eafcac67b94c5a87b51646caa9c1ff",
+      quando="O cadastro é aprovado e a conta passa a ATIVO",
+      vars=["fornecedor_razao_social","parceiro_nome","portal_url","limite_disponivel"]),
+ dict(cod="FRS3",   nome="Cadastro negado", fluxo="FRS", quem="F",
+      tid="d-7a59f96e6e3f4ae4ab3bd0a4f6f5f4e0",
+      quando="O cadastro é reprovado na análise",
+      vars=["fornecedor_razao_social","motivo_recusa","suporte_url","pode_reenviar"]),
+ dict(cod="FRS2-P", nome="Fornecedor aprovado", fluxo="FRS", quem="P",
+      tid="d-e87f58eec2b04bc0baf5c91e4f8964ef",
+      quando="O mesmo evento do FRS2, do lado de quem administra a carteira",
+      vars=["parceiro_nome","fornecedor_razao_social","fornecedor_cnpj","aprovado_em","fornecedores_url"]),
+ dict(cod="FRS3-P", nome="Fornecedor negado", fluxo="FRS", quem="P",
+      tid="d-afbd77eabc4d478ca385f149c59f2c12",
+      quando="O mesmo evento do FRS3, do lado de quem administra a carteira",
+      vars=["parceiro_nome","fornecedor_razao_social","fornecedor_cnpj","motivo_recusa"]),
+ dict(cod="PFS1",   nome="Solicitação enviada", fluxo="PFS", quem="F",
+      tid="d-dd5d687573bd48a38339e77470225c4f",
+      quando="O fornecedor envia a operação e ela entra na dupla aprovação",
+      vars=["fornecedor_razao_social","operacao_id","nota_numero","valor_bruto","prazo_dias","vencimento","operacao_url"]),
+ dict(cod="PFS1-P", nome="Nova solicitação", fluxo="PFS", quem="P",
+      tid="d-2e9435d081214a13a6f9fa25315c4cf9",
+      quando="O mesmo envio, do lado de quem analisa — cai na fila “para analisar”",
+      vars=["parceiro_nome","fornecedor_razao_social","operacao_id","valor_bruto","vencimento","analisar_url","fila_pendentes"]),
+ dict(cod="PFS2",   nome="Solicitação aprovada", fluxo="PFS", quem="F",
+      tid="d-84f758f7f7dc4c5eb8681cd34905c7f0",
+      quando="ANTI e parceiro aprovam — a dupla aprovação fecha",
+      vars=["fornecedor_razao_social","operacao_id","valor_bruto","taxa","prazo_dias","desconto","valor_liquido","contrato_url"]),
+ dict(cod="PFS3",   nome="Solicitação recusada", fluxo="PFS", quem="F",
+      tid="d-e9b5379872e64b55972589430d7cdca3",
+      quando="A operação é recusada por um dos dois lados",
+      vars=["fornecedor_razao_social","operacao_id","motivo_recusa","recusado_por","nova_solicitacao_url"]),
+ dict(cod="PFS4",   nome="Contrato assinado", fluxo="PFS", quem="F",
+      tid="d-5b598cf937164a07b8bcaaf0453ef957",
+      quando="Todas as partes assinam o contrato da cessão",
+      vars=["fornecedor_razao_social","operacao_id","valor_liquido","assinado_em","contrato_url","previsao_credito"]),
+ dict(cod="PFS5",   nome="Valor creditado", fluxo="PFS", quem="F",
+      tid="d-72de6fe3e58145db9d90ae63f21815da",
+      quando="O depósito cai na conta do fornecedor",
+      vars=["fornecedor_razao_social","operacao_id","valor_liquido","creditado_em","conta_destino","comprovante_url"]),
+ dict(cod="PFS6",   nome="Falha no depósito", fluxo="PFS", quem="F",
+      tid="d-0bab21d89b5a4a4e898318e371b39490",
+      quando="O depósito é rejeitado pelo banco — dados bancários divergentes, conta encerrada",
+      vars=["fornecedor_razao_social","operacao_id","valor_liquido","falha_motivo","corrigir_dados_url"]),
 ]
 
-sacado_rows = "".join(
-  f'<tr>'
-  f'<td class="s-name"><span class="g-num">{i:02d}</span>{html.escape(x["nome"])}</td>'
-  f'<td class="s-when">{html.escape(x["quando"])}<span class="s-para">{html.escape(x["para"])}</span></td>'
-  f'<td class="s-acao">{html.escape(x["acao"])}</td>'
-  f'<td class="s-vars">{"".join(f"<code>{{{{{v}}}}}</code>" for v in x["vars"])}</td>'
-  f'<td class="s-tid"><span class="tid-vazio">a preencher</span></td>'
-  f'<td class="st"><span class="pill-wip">In progress</span></td>'
-  f'</tr>' for i, x in enumerate(SACADO, 1))
+FLUXO_NOME = {"FRS": "Cadastro do fornecedor", "PFS": "Operação no portal", "RS": "Cadastro público"}
+QUEM_NOME = {"F": "Fornecedor", "P": "Parceiro · sacado"}
+
+sacado_rows = ""
+_fluxo_atual = None
+for x in SACADO:
+    if x["fluxo"] != _fluxo_atual:
+        _fluxo_atual = x["fluxo"]
+        n = sum(1 for y in SACADO if y["fluxo"] == _fluxo_atual)
+        sacado_rows += (f'<tr class="grow"><th colspan="6">'
+                        f'<span class="grow-n">{_fluxo_atual}</span>'
+                        f'<span class="grow-name">{FLUXO_NOME[_fluxo_atual]}</span>'
+                        f'<span class="grow-count">{n} comunicações</span></th></tr>')
+    sacado_rows += (
+      f'<tr>'
+      f'<td class="s-name"><span class="g-num">{x["cod"]}</span>{html.escape(x["nome"])}</td>'
+      f'<td class="s-quem"><span class="quem quem-{x["quem"]}">{QUEM_NOME[x["quem"]]}</span></td>'
+      f'<td class="s-when">{html.escape(x["quando"])}</td>'
+      f'<td class="s-vars">{"".join(f"<code>{{{{{v}}}}}</code>" for v in x["vars"])}</td>'
+      f'<td class="s-tid"><code class="tid">{x["tid"]}</code></td>'
+      f'<td class="st"><span class="pill-wip">In progress</span></td>'
+      f'</tr>')
 
 BACKEND = [
- ("O link precisa ser um token assinado",
-  "O sacado não tem conta, então a confirmação acontece fora de sessão. O <code>confirm_url</code> carrega um token de uso único, com expiração curta e vínculo ao pedido — não um id sequencial adivinhável."),
- ("Sem persistência in-app",
-  "Nenhuma dessas comunicações vira card na Central de Notificações: o destinatário não tem onde vê-la. O email é o canal inteiro, e o registro fica no log de eventos da operação."),
- ("Bounce volta para o cedente",
-  "O endereço do sacado é digitado pelo cedente, então erro de digitação é o caso comum, não a exceção. O Event Webhook precisa tratar o bounce dessas comunicações avisando o cedente no app, e não silenciosamente."),
+ ("Template ID em configuração, nunca no código",
+  "Os quinze <code>template_id</code> já existem no SendGrid e estão na tabela acima. Eles pertencem ao ambiente, não ao código: sandbox e produção têm ids diferentes, e um id fixo no fonte é o erro que só aparece no dia do go-live."),
+ ("Um evento, dois destinatários",
+  "A dupla aprovação faz cada mudança de estado render duas comunicações — o par FRS2/FRS2-P e o par PFS1/PFS1-P. São dois <code>template_id</code> e duas chamadas, não um email com dois destinatários em cópia: o que o fornecedor precisa ler não é o que o parceiro precisa ler."),
+ ("O convite vai para quem ainda não tem conta",
+  "FRS1 · Convite sai depois da importação em massa da carteira, para um endereço que nunca se autenticou. O <code>convite_url</code> carrega token de uso único com expiração, e não um id sequencial."),
+ ("Bounce do convite volta para o parceiro",
+  "O endereço do fornecedor vem da planilha que o parceiro importou, então erro de digitação é caso comum. O Event Webhook precisa devolver o bounce de FRS1 para a tela de Fornecedores, e não falhar em silêncio — senão o fornecedor fica em AGUARDANDO para sempre."),
  ("Idempotência por evento",
-  "Retry de fila não pode virar segundo email. A chave de idempotência combina o id da operação com o tipo de comunicação."),
- ("O que não pode ir no corpo",
-  "Dados do cedente além do necessário para o sacado reconhecer a nota. A relação comercial é dele com o cedente; a ANTI entra como cessionária, não como parte da negociação."),
- ("Remetente e domínio",
-  "Decisão em aberto: se sai do mesmo domínio transacional do app ou de um subdomínio próprio. O público é outro e o volume é outro, o que pesa a favor de separar."),
+  "Retry de fila não pode virar segundo email. A chave combina o id da operação (ou do cadastro) com o código da comunicação — <code>PFS5:op_12345</code>."),
+ ("Os números vêm de um lugar só",
+  "Valor bruto, taxa, prazo, desconto e líquido aparecem no email e na tela de detalhe da operação. Eles têm que sair do mesmo cálculo: divergência entre o que o email diz e o que o portal mostra vira chamado no suporte e desconfiança na conta."),
 ]
 
 backend_html = "".join(
@@ -439,14 +502,15 @@ sacado_ctx = parte("sacado-contexto").replace(
   '<h2 class="sec">Régua do sacado</h2>', '<h2 class="sec">Por que o sacado recebe email</h2>')
 
 sacado = f'''<header class="hero pagehero">
-  <div class="kicker">Régua 2 de 2 &middot; destinatário: o sacado</div>
-  <h1>Régua do <em>sacado</em>.<span class="hero-st">In progress</span></h1>
-  <p class="lede">Risco sacado é o modelo padrão da operação: a decisão de crédito olha para quem vai pagar a nota. Essas são as comunicações que saem para ele — outro público, outro tom e outro peso jurídico que os da régua do app.</p>
+  <div class="kicker">Régua 2 de 2 &middot; Portal ANTI &middot; produto Risco Sacado</div>
+  <h1>Régua do <em>risco sacado</em>.<span class="hero-st">In progress</span></h1>
+  <p class="lede">Quinze comunicações que cobrem o cadastro do fornecedor, a análise da operação e o caminho do dinheiro — com os <code>template_id</code> já criados no SendGrid. Diferente da régua do app, aqui há dois destinatários: quem vende a nota e quem a paga.</p>
   <div class="facts">
-    <div class="fact"><b>6</b><span>comunicações previstas</span></div>
-    <div class="fact"><b>0</b><span>implementadas</span></div>
-    <div class="fact"><b>0</b><span>persistem no app</span></div>
-    <div class="fact"><b>95%</b><span>das operações com escrow</span></div>
+    <div class="fact"><b>15</b><span>comunicações</span></div>
+    <div class="fact"><b>3</b><span>fluxos</span></div>
+    <div class="fact"><b>2</b><span>destinatários</span></div>
+    <div class="fact"><b>15</b><span>template IDs criados</span></div>
+    <div class="fact"><b>0</b><span>em produção</span></div>
   </div>
 </header>
 
@@ -454,12 +518,12 @@ sacado = f'''<header class="hero pagehero">
 
 <div class="block">
   <h2 class="sec">As comunicações</h2>
-  <p class="lede" style="margin:0 0 20px;">Cada linha traz o gatilho, o que se espera do destinatário, as variáveis que o backend precisa mandar em <code>dynamic_template_data</code> e o espaço do <code>template_id</code> do SendGrid, que se preenche quando o template for criado.</p>
-  <p class="aviso"><b>Proposta, não fechado.</b> Esta lista foi derivada do fluxo do sacado no app e do desenho da operação. Ela precisa ser conferida contra o fluxo que está no Figma e validada com o jurídico antes de virar template.</p>
+  <p class="lede" style="margin:0 0 20px;">Agrupadas pelo fluxo a que pertencem. Cada linha traz quem recebe, o gatilho, as variáveis que o backend manda em <code>dynamic_template_data</code> e o <code>template_id</code> do SendGrid — copiável, é o que o backend referencia na chamada.</p>
+  <p class="aviso"><b>Os template IDs são reais; as variáveis são proposta.</b> Os quinze templates já existem no SendGrid. Os nomes de variável abaixo foram derivados do fluxo no Figma e das telas do portal — confira contra o que cada template espera antes de ligar o backend, e me diga as divergências que eu acerto a tabela.</p>
   <div class="tablewrap"><table class="sacado">
     <thead><tr>
-      <th>Comunicação</th><th>Gatilho</th><th>O que se espera</th>
-      <th>Variáveis</th><th>Template ID</th><th>Status</th>
+      <th>Comunicação</th><th>Quem recebe</th><th>Gatilho</th>
+      <th>Variáveis</th><th>Template ID &middot; SendGrid</th><th>Status</th>
     </tr></thead>
     <tbody>{sacado_rows}</tbody>
   </table></div>
