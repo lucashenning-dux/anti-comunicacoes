@@ -1,0 +1,179 @@
+<title>Guideline das Réguas de Comunicação</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500;700&family=Inter:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="style.css">
+<div class="shell">
+<nav class="topnav">
+  <a class="nav-brand" href="index.html">ANTI<span>·</span>Comunicação</a>
+  <div class="nav-links"><a class="nav-link atual" href="index.html">Guideline</a><a class="nav-link" href="regua-app.html">Régua do app<span class="nav-st">Em revisão</span></a><a class="nav-link" href="regua-sacado.html">Régua do sacado<span class="nav-st">In progress</span></a></div>
+</nav>
+<header class="hero">
+  <div class="kicker">ANTI &middot; Guideline &middot; v1 &middot; set 2026</div>
+  <h1>Guideline das<br><em>réguas de comunicação</em>.</h1>
+  <p class="lede">De qual domínio sai cada mensagem, por qual caminho ela é aprovada e como ela é construída. Este documento é o centralizador: as regras que valem para toda comunicação de email do ANTI moram aqui, e cada régua tem a sua própria página.</p>
+  <div class="facts">
+    <div class="fact"><b>2</b><span>réguas</span></div>
+    <div class="fact"><b>3</b><span>domínios de envio</span></div>
+    <div class="fact"><b>5</b><span>passos até o disparo</span></div>
+    <div class="fact"><b>8</b><span>blocos de layout</span></div>
+    <div class="fact"><b>600px</b><span>largura &middot; tabelas</span></div>
+  </div>
+</header>
+
+<div class="block">
+  <h2 class="sec">Domínios de envio</h2>
+  <p class="lede" style="margin:0 0 26px;">Na hora de autenticar os domínios no SendGrid, a separação importa mais do que parece: reputação de entrega é medida por domínio. Se um disparo de marketing for marcado como spam em volume, quem paga a conta é o domínio que mandou o disparo &mdash; e a régua transacional não pode ser esse domínio, porque dela depende o código de acesso que destrava o login.</p>
+  <div class="doms">
+    <div class="dom dom-1">
+      <div class="dom-role">Corporativo &middot; interno</div>
+      <div class="dom-addr">@wearedux.com</div>
+      <p class="dom-what">O email das pessoas da Dux. Circulação interna, conversa com cliente, jurídico, cobrança, assinatura de contrato.</p>
+      <div class="dom-rule">Nunca usado para envio automático nem em massa.</div>
+    </div>
+    <div class="dom dom-2">
+      <div class="dom-role">Transacional &middot; a régua</div>
+      <div class="dom-addr">@sejaanti.com.br</div>
+      <p class="dom-what">As duas réguas: os dezoito emails do app e as quinze comunicações do Risco Sacado. Tudo que o sistema dispara sozinho a partir de uma mudança de estado.</p>
+      <div class="dom-rule">É o domínio mais crítico dos três. Nada de marketing passa por aqui.</div>
+    </div>
+    <div class="dom dom-3">
+      <div class="dom-role">Marketing &middot; a definir</div>
+      <div class="dom-addr">@mkt.sejaanti.com.br</div>
+      <p class="dom-what">Campanha, novidade de produto, conteúdo, reengajamento. Subdomínio proposto, ainda não decidido.</p>
+      <div class="dom-rule">Subdomínio próprio justamente para não sujar o transacional.</div>
+    </div>
+  </div>
+  <div class="note" style="border-left-color:var(--conta);"><b>Ao configurar no SendGrid</b><p>Autentique cada domínio separadamente, e mantenha o marketing em subuser e IP próprios. O grupo de descadastro (<i>unsubscribe group</i>) existe só no marketing: email de serviço não pode cair no mesmo opt-out, porque enquanto a conta estiver ativa o cliente precisa receber o aviso de documento rejeitado e o comprovante de transferência. O <code>Reply-To</code> da régua transacional aponta para uma caixa monitorada de verdade &mdash; nada de <code>no-reply</code> que devolve bounce.</p></div>
+</div>
+
+
+<div class="block" id="workflow">
+  <h2 class="sec">O workflow</h2>
+  <p class="lede" style="margin:0 0 30px;">São duas réguas, com públicos e responsabilidades diferentes, e as duas seguem o mesmo caminho de produção: cinco passos, com dono definido em cada um. O desenho existe para que nenhuma comunicação chegue ao destinatário sem ter passado pela revisão de texto, e para que o HTML tenha uma origem só.</p>
+  <div class="tablewrap"><table class="duas">
+    <thead><tr><th>Régua</th><th>Quem recebe</th><th>O que cobre</th><th>Status</th></tr></thead>
+    <tbody>
+      <tr>
+        <td class="d-name"><a href="regua-app.html">Régua do app</a></td>
+        <td>O cedente — quem tem conta no ANTI</td>
+        <td>As dezoito comunicações deste documento, da criação da conta à liquidação da operação</td>
+        <td><span class="pill-wip">Em revisão</span><span class="d-note">18 desenhadas, nenhuma implementada</span></td>
+      </tr>
+      <tr>
+        <td class="d-name"><a href="regua-sacado.html">Régua do sacado</a></td>
+        <td>O fornecedor e o parceiro, que é o sacado</td>
+        <td>Cadastro do fornecedor, análise da operação e caminho do dinheiro, nas duas pontas</td>
+        <td><span class="pill-wip">In progress</span><span class="d-note">15 comunicações, template IDs criados</span></td>
+      </tr>
+    </tbody>
+  </table></div>
+
+  <h3 class="flow-title">Os cinco passos</h3>
+  <div class="flowwrap"><ol class="flowmap"><li class="fm-step"><div class="fm-top"><span class="fm-n">1</span><span class="fm-owner">Dux</span></div><h4>Solicitação</h4><p>O pedido da comunicação, com a etapa da jornada em que ela entra e o que precisa dizer.</p></li><div class="fm-arrow" aria-hidden="true">→</div><li class="fm-step"><div class="fm-top"><span class="fm-n">2</span><span class="fm-owner">Claude</span></div><h4>Materialização no Figma</h4><p>Vira layout em dois estados: com as variáveis à mostra e com dados de teste preenchidos.</p></li><div class="fm-arrow" aria-hidden="true">→</div><li class="fm-step"><div class="fm-top"><span class="fm-n">3</span><span class="fm-owner">Dux</span></div><h4>Revisão do texto</h4><p>O time aprova o copy contra a etapa da jornada. É o passo que libera a comunicação.</p></li><div class="fm-arrow" aria-hidden="true">→</div><li class="fm-step"><div class="fm-top"><span class="fm-n">4</span><span class="fm-owner">Dux</span></div><h4>Exportação</h4><p>O HTML sai do repositório e vira um Dynamic Template, com <code>template_id</code> próprio.</p></li><div class="fm-arrow" aria-hidden="true">→</div><li class="fm-step"><div class="fm-top"><span class="fm-n">5</span><span class="fm-owner">Backend</span></div><h4>Disparo</h4><p>No evento, a Mail Send API é chamada com o template e os parâmetros da comunicação.</p></li></ol></div>
+  <div class="note" style="border-left-color:var(--conta);"><b>Onde isso tudo mora</b><p>As comunicações vivem num repositório próprio no GitHub, separado do código do aplicativo — só o copy, o gerador, os layouts e os dados de teste. O passo 2 acontece primeiro em arquivo: o Claude gera os layouts localmente, e é esse material que depois vai para o Figma, para revisão, e para o SendGrid, para envio. Versionar é o que tira as comunicações da máquina de uma pessoa só: qualquer um do time abre o repositório, lê o texto aprovado, vê o HTML exato que está no ar e acompanha no histórico o que mudou em cada template a cada revisão de copy.</p></div>
+  <div class="note" style="border-left-color:var(--ant);"><b>A via de volta</b><p>A chamada de API é a ida: o sistema pede ao SendGrid que envie. A volta é o <i>Event Webhook</i>, que o SendGrid chama de volta no nosso endpoint a cada entrega, abertura, bounce ou marcação de spam. É essa via que diz se a régua está funcionando de verdade — e é dela que sai o número de implementadas que aparece na página de cada régua.</p></div>
+</div>
+
+
+
+<div class="block">
+  <h2 class="sec">O layout</h2>
+  <p class="lede" style="margin:0 0 30px;">Um único template serve todas as comunicações. São oito blocos, cada um com uma função — e a disciplina é usar só os que a mensagem precisa, nunca todos.</p>
+  <div class="anatomy">
+    <div class="viewport" style="height:640px;border:1px solid var(--line);border-radius:14px;border-top:1px solid var(--line);">
+      <iframe title="Anatomia do template" srcdoc="&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;pt-BR&quot; xmlns=&quot;http://www.w3.org/1999/xhtml&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;utf-8&quot;&gt;
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width,initial-scale=1&quot;&gt;
+&lt;meta name=&quot;x-apple-disable-message-reformatting&quot;&gt;
+&lt;meta name=&quot;color-scheme&quot; content=&quot;light only&quot;&gt;
+&lt;meta name=&quot;supported-color-schemes&quot; content=&quot;light only&quot;&gt;
+&lt;title&gt;Sua proposta de antecipação está pronta&lt;/title&gt;
+&lt;!--[if mso]&gt;&lt;style&gt;*{font-family:Arial,Helvetica,sans-serif !important;}&lt;/style&gt;&lt;![endif]--&gt;
+&lt;style&gt;
+  @import url(&#x27;https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;700&amp;family=IBM+Plex+Mono:wght@400;700&amp;family=Inter:wght@400;600&amp;display=swap&#x27;);
+  body,table,td,a{-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%;}
+  img{border:0;line-height:100%;outline:none;text-decoration:none;-ms-interpolation-mode:bicubic;}
+  a{color:#171717;}
+  @media only screen and (max-width:620px){
+    .wrap{width:100% !important;}
+    .pad{padding-left:24px !important;padding-right:24px !important;}
+    .t-title{font-size:22px !important;}
+  }
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body style=&quot;margin:0;padding:0;background:#f4f4f5;&quot;&gt;
+&lt;div style=&quot;display:none;font-size:1px;color:#f4f4f5;line-height:1px;max-height:0;max-width:0;opacity:0;overflow:hidden;&quot;&gt;R$ 17.797,00 disponiveis. Proposta valida até 10 set 2026, 18h00.&amp;nbsp;&amp;zwnj;&amp;nbsp;&amp;zwnj;&amp;nbsp;&amp;zwnj;&amp;nbsp;&amp;zwnj;&amp;nbsp;&amp;zwnj;&amp;nbsp;&amp;zwnj;&amp;nbsp;&amp;zwnj;&amp;nbsp;&amp;zwnj;&lt;/div&gt;
+&lt;table role=&quot;presentation&quot; width=&quot;100%&quot; cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; border=&quot;0&quot; bgcolor=&quot;#f4f4f5&quot; style=&quot;background:#f4f4f5;&quot;&gt;
+&lt;tr&gt;&lt;td align=&quot;center&quot; style=&quot;padding:32px 12px;&quot;&gt;
+
+&lt;table role=&quot;presentation&quot; class=&quot;wrap&quot; width=&quot;600&quot; cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; border=&quot;0&quot; style=&quot;width:600px;max-width:600px;&quot;&gt;
+
+  &lt;!-- HEADER --&gt;
+  &lt;tr&gt;&lt;td bgcolor=&quot;#171717&quot; style=&quot;background:#171717;border-radius:20px 20px 0 0;padding:22px 40px;&quot;&gt;
+    &lt;table role=&quot;presentation&quot; width=&quot;100%&quot; cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; border=&quot;0&quot;&gt;&lt;tr&gt;
+      &lt;td align=&quot;left&quot; style=&quot;line-height:0;font-size:0;&quot;&gt;&lt;img src=&quot;data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGcAAABACAMAAAAwNplFAAAC/VBMVEVMaXH////////////////////+/v7////////////////////////////+/v7////////////////+/v7+/v7////////////+/v7////////////////////////////////////////////////////////+/v7////////////////+/v7////////+/v7////////////////+/v7////+/v7////////////////+/v7////+/v7////////+/v7////////////////+/v7////////////////////////////////////////////+/v7////////////////////////////////////+/v7////////////////////////////////////////////////////////////////+/v7////////+/v7////////////+/v7////////////+/v7////+/v7////////////////////////////////////////+/v7////////////////+/v7////////////+/v7////////////////////////////+/v7////////////////////////////+/v7////////////////////////////////////////////////////////////////////////////////////////////////////////////+/v7////////////////////////////////////////////////+/v7////////////////////////////////////////////////+/v7////////////////////////////////////////////////////////////////////////////+/v7////////////////////////////////////////////////+/v7////////////////+/v7///////////////////+j47sCAAAA/nRSTlMABPsFA/38Av4B6Bgr5+UgBhv64KSmIyTi5Ob4+fTO8QrSyNbr6iLuZiga8vYh4enaDCcmtqgOGbMu9e2cxaWeyg/jE1hlUA07wE0WoGiqKlUc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&quot; width=&quot;52&quot; height=&quot;32&quot; alt=&quot;ANTI&quot; style=&quot;display:block;width:52px;height:32px;border:0;outline:none;text-decoration:none;font-family:&#x27;IBM Plex Sans&#x27;,&#x27;Helvetica Neue&#x27;,Helvetica,Arial,sans-serif;font-weight:700;font-size:19px;letter-spacing:-0.3px;color:#ffffff;&quot;&gt;&lt;/td&gt;
+      &lt;td align=&quot;right&quot; style=&quot;font-family:&#x27;IBM Plex Mono&#x27;,&#x27;SFMono-Regular&#x27;,Consolas,&#x27;Courier New&#x27;,monospace;font-weight:700;font-size:9px;color:rgba(255,255,255,0.45);text-transform:uppercase;letter-spacing:0.14em;&quot;&gt;Proposta&lt;/td&gt;
+    &lt;/tr&gt;&lt;/table&gt;
+  &lt;/td&gt;&lt;/tr&gt;
+
+  &lt;!-- CORPO --&gt;
+  &lt;tr&gt;&lt;td class=&quot;pad&quot; bgcolor=&quot;#ffffff&quot; style=&quot;background:#ffffff;padding:36px 40px 34px;&quot;&gt;
+&lt;div style=&quot;font-family:&#x27;IBM Plex Mono&#x27;,&#x27;SFMono-Regular&#x27;,Consolas,&#x27;Courier New&#x27;,monospace;font-weight:700;font-size:10px;line-height:1.4;color:#8a8a90;text-transform:uppercase;letter-spacing:0.12em;padding-bottom:10px;&quot;&gt;Proposta disponível&lt;/div&gt;
+&lt;h1 class=&quot;t-title&quot; style=&quot;margin:0 0 14px;font-family:&#x27;IBM Plex Sans&#x27;,&#x27;Helvetica Neue&#x27;,Helvetica,Arial,sans-serif;font-weight:700;font-size:26px;line-height:1.25;letter-spacing:-0.5px;color:#171717;&quot;&gt;Você tem uma proposta.&lt;/h1&gt;
+&lt;p style=&quot;margin:0 0 16px;font-family:&#x27;Inter&#x27;,&#x27;Helvetica Neue&#x27;,Helvetica,Arial,sans-serif;font-size:15px;line-height:1.65;color:#52525b;&quot;&gt;Olá, Rafael. Analisamos sua nota e a proposta de antecipação está pronta para sua revisão.&lt;/p&gt;
+&lt;table role=&quot;presentation&quot; width=&quot;100%&quot; cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; border=&quot;0&quot; style=&quot;margin:4px 0 24px;&quot;&gt;&lt;tr&gt;
+&lt;td style=&quot;padding:12px 0;font-family:&#x27;IBM Plex Mono&#x27;,&#x27;SFMono-Regular&#x27;,Consolas,&#x27;Courier New&#x27;,monospace;font-size:11px;line-height:1.4;color:#8a8a90;text-transform:uppercase;letter-spacing:0.06em;&quot;&gt;Pedido&lt;/td&gt;
+&lt;td align=&quot;right&quot; style=&quot;padding:12px 0;font-family:&#x27;IBM Plex Sans&#x27;,&#x27;Helvetica Neue&#x27;,Helvetica,Arial,sans-serif;font-weight:700;font-size:14px;line-height:1.4;color:#171717;&quot;&gt;#ANT-2026-1234&lt;/td&gt;
+&lt;/tr&gt;&lt;tr&gt;
+&lt;td style=&quot;border-top:1px solid #e6e6e9;padding:12px 0;font-family:&#x27;IBM Plex Mono&#x27;,&#x27;SFMono-Regular&#x27;,Consolas,&#x27;Courier New&#x27;,monospace;font-size:11px;line-height:1.4;color:#8a8a90;text-transform:uppercase;letter-spacing:0.06em;&quot;&gt;Valor da nota&lt;/td&gt;
+&lt;td align=&quot;right&quot; style=&quot;border-top:1px solid #e6e6e9;padding:12px 0;font-family:&#x27;IBM Plex Sans&#x27;,&#x27;Helvetica Neue&#x27;,Helvetica,Arial,sans-serif;font-weight:700;font-size:14px;line-height:1.4;color:#171717;&quot;&gt;R$ 18.300,00&lt;/td&gt;
+&lt;/tr&gt;&lt;tr&gt;
+&lt;td style=&quot;border-top:1px solid #e6e6e9;padding:12px 0;font-family:&#x27;IBM Plex Mono&#x27;,&#x27;SFMono-Regular&#x27;,Consolas,&#x27;Courier New&#x27;,monospace;font-size:11px;line-height:1.4;color:#8a8a90;text-transform:uppercase;letter-spacing:0.06em;&quot;&gt;Taxa&lt;/td&gt;
+&lt;td align=&quot;right&quot; style=&quot;border-top:1px solid #e6e6e9;padding:12px 0;font-family:&#x27;IBM Plex Sans&#x27;,&#x27;Helvetica Neue&#x27;,Helvetica,Arial,sans-serif;font-weight:700;font-size:14px;line-height:1.4;color:#171717;&quot;&gt;2,8% a.m.&lt;/td&gt;
+&lt;/tr&gt;&lt;tr&gt;
+&lt;td style=&quot;border-top:1px solid #e6e6e9;padding:12px 0;font-family:&#x27;IBM Plex Mono&#x27;,&#x27;SFMono-Regular&#x27;,Consolas,&#x27;Courier New&#x27;,monospace;font-size:11px;line-height:1.4;color:#8a8a90;text-transform:uppercase;letter-spacing:0.06em;&quot;&gt;Você recebe&lt;/td&gt;
+&lt;td align=&quot;right&quot; style=&quot;border-top:1px solid #e6e6e9;padding:12px 0;font-family:&#x27;IBM Plex Sans&#x27;,&#x27;Helvetica Neue&#x27;,Helvetica,Arial,sans-serif;font-weight:700;font-size:14px;line-height:1.4;color:#171717;&quot;&gt;R$ 17.797,00&lt;/td&gt;
+&lt;/tr&gt;&lt;tr&gt;
+&lt;td style=&quot;border-top:1px solid #e6e6e9;padding:12px 0;font-family:&#x27;IBM Plex Mono&#x27;,&#x27;SFMono-Regular&#x27;,Consolas,&#x27;Courier New&#x27;,monospace;font-size:11px;line-height:1.4;color:#8a8a90;text-transform:uppercase;letter-spacing:0.06em;&quot;&gt;Válida até́&lt;/td&gt;
+&lt;td align=&quot;right&quot; style=&quot;border-top:1px solid #e6e6e9;padding:12px 0;font-family:&#x27;IBM Plex Sans&#x27;,&#x27;Helvetica Neue&#x27;,Helvetica,Arial,sans-serif;font-weight:700;font-size:14px;line-height:1.4;color:#171717;&quot;&gt;10 set 2026, 18h00&lt;/td&gt;
+&lt;/tr&gt;&lt;/table&gt;
+&lt;table role=&quot;presentation&quot; cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; border=&quot;0&quot; style=&quot;margin:4px 0 10px;&quot;&gt;
+&lt;tr&gt;&lt;td align=&quot;center&quot; bgcolor=&quot;#e9fc00&quot; style=&quot;border-radius:100px;&quot;&gt;
+&lt;a href=&quot;#/pedidos/#ANT-2026-1234&quot; style=&quot;display:inline-block;padding:16px 34px;font-family:&#x27;IBM Plex Sans&#x27;,&#x27;Helvetica Neue&#x27;,Helvetica,Arial,sans-serif;font-weight:700;font-size:13px;letter-spacing:0.03em;color:#171717;text-decoration:none;border-radius:100px;&quot;&gt;REVISAR PROPOSTA &amp;nbsp;&amp;rarr;&lt;/a&gt;
+&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;p style=&quot;margin:14px 0 0;font-family:&#x27;Inter&#x27;,&#x27;Helvetica Neue&#x27;,Helvetica,Arial,sans-serif;font-size:12px;line-height:1.6;color:#8a8a90;&quot;&gt;Depois de aceitar, seguimos para a confirmação do sacado. Nada é debitado ou cobrado nesta etapa.&lt;/p&gt;
+  &lt;/td&gt;&lt;/tr&gt;
+
+  &lt;!-- RODAPE --&gt;
+  &lt;tr&gt;&lt;td class=&quot;pad&quot; bgcolor=&quot;#ffffff&quot; style=&quot;background:#ffffff;border-top:1px solid #e6e6e9;border-radius:0 0 20px 20px;padding:26px 40px 30px;&quot;&gt;
+    &lt;div style=&quot;font-family:&#x27;IBM Plex Mono&#x27;,&#x27;SFMono-Regular&#x27;,Consolas,&#x27;Courier New&#x27;,monospace;font-weight:700;font-size:9px;color:#8a8a90;text-transform:uppercase;letter-spacing:0.14em;padding-bottom:10px;&quot;&gt;ANTI &amp;middot; UMA EMPRESA DUX&lt;/div&gt;
+    &lt;div style=&quot;font-family:&#x27;Inter&#x27;,&#x27;Helvetica Neue&#x27;,Helvetica,Arial,sans-serif;font-size:11px;line-height:1.7;color:#8a8a90;&quot;&gt;
+      Você recebeu este email porque tem uma conta no ANTI. Emails de serviço como este não podem ser desativados enquanto sua conta estiver ativa.&lt;br&gt;&lt;br&gt;
+      Precisa de ajuda? Fale com a gente em &lt;a href=&quot;mailto:suporte@sejaanti.com.br&quot; style=&quot;color:#52525b;text-decoration:underline;&quot;&gt;suporte@sejaanti.com.br&lt;/a&gt;.&lt;br&gt;
+      Nunca pedimos senha, PIN ou código de verificação por email, telefone ou WhatsApp.
+    &lt;/div&gt;
+    &lt;div style=&quot;font-family:&#x27;IBM Plex Mono&#x27;,&#x27;SFMono-Regular&#x27;,Consolas,&#x27;Courier New&#x27;,monospace;font-size:10px;line-height:1.7;color:#b4b4ba;padding-top:14px;&quot;&gt;
+      ANTI Serviços Financeiros S.A. · CNPJ 55.402.118/0001-90 &amp;middot; Rua Comendador Araújo, 143 · Curitiba, PR&lt;br&gt;
+      &lt;a href=&quot;#&quot; style=&quot;color:#b4b4ba;text-decoration:underline;&quot;&gt;Preferências de email&lt;/a&gt;
+    &lt;/div&gt;
+  &lt;/td&gt;&lt;/tr&gt;
+
+&lt;/table&gt;
+&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+"></iframe>
+    </div>
+    <ol><li><span class='an-name'>Cabeçalho</span><span class='an-spec'>22px 40px · fundo ink #171717</span><span class='an-why'>Faixa preta com o wordmark e uma etiqueta de contexto em mono (Proposta, Segurança, Acao necessária). A etiqueta é o que o usuário lê antes do assunto no preview do cliente de email.</span></li><li><span class='an-name'>Sobretítulo</span><span class='an-spec'>IBM Plex Mono 10px · caps · 0.12em</span><span class='an-why'>Classifica o email em duas palavras. Mesma taxonomia dos cards da Central de Notificações.</span></li><li><span class='an-name'>Título</span><span class='an-spec'>IBM Plex Sans 700 · 26px · -0.5px</span><span class='an-why'>Uma frase, sujeito e verbo, no indicativo. Nunca uma pergunta.</span></li><li><span class='an-name'>Corpo</span><span class='an-spec'>Inter 15px · 1.65 · #52525b</span><span class='an-why'>Um parágrafo. Diz o que aconteceu e o que muda para o usuário.</span></li><li><span class='an-name'>Bloco de dados</span><span class='an-spec'>Mono 11px caps / Plex Sans 700 14px</span><span class='an-why'>Pares rótulo/valor separados por hairline. É o que substitui o print da tela: valor, pedido, sacado, prazo.</span></li><li><span class='an-name'>Destaque</span><span class='an-spec'>Fundo zinc + barra 3px semântica</span><span class='an-why'>Só aparece quando existe motivo, risco ou aviso. Vermelho para rejeição e falha, âmbar para prazo e cancelamento.</span></li><li><span class='an-name'>Botão</span><span class='an-spec'>Pílula amarela #e9fc00 · ink 700 13px</span><span class='an-why'>Um único CTA por email, sempre levando para a tela correspondente no app.</span></li><li><span class='an-name'>Rodapé</span><span class='an-spec'>Mono 9–11px · #8a8a90</span><span class='an-why'>Assinatura ANTI · uma empresa DUX, canal de suporte, o aviso antifraude e os dados legais da emissora.</span></li></ol>
+  </div>
+</div>
+
+<div class="block">
+  <h2 class="sec">Onde está o resto</h2>
+  <p class="lede" style="margin:0 0 30px;">As duas réguas, e as ferramentas que sustentam as duas.</p>
+  <div class="link-grid"><a class="link-card" href="#"><span class="link-name">Repositório</span><span class="link-what">As comunicações, o gerador e os HTML de produção</span><span class="link-url">github.com/&lt;org&gt;/anti-comunicacoes</span></a><a class="link-card" href="https://www.figma.com/design/CDkBtKsfa2uuRdEYVUDfeM" target=_blank rel=noopener><span class="link-name">Figma dos emails</span><span class="link-what">Os layouts, com variáveis e com dados de teste</span><span class="link-url">figma.com/design/CDkBtKsfa2uuRdEYVUDfeM</span></a><a class="link-card" href="https://www.figma.com/design/XIT0diYFNoRLVEBR02XrAx/Risco-Sacado?node-id=24-7" target=_blank rel=noopener><span class="link-name">Figma do Risco Sacado</span><span class="link-what">O fluxo do parceiro e do fornecedor no Portal ANTI</span><span class="link-url">figma.com/design/XIT0diYFNoRLVEBR02XrAx</span></a><a class="link-card" href="https://brandbook.sejaanti.com.br/" target=_blank rel=noopener><span class="link-name">Brandbook</span><span class="link-what">A marca, os ativos e o uso correto do ícone</span><span class="link-url">brandbook.sejaanti.com.br</span></a><a class="link-card" href="https://app.sendgrid.com/" target=_blank rel=noopener><span class="link-name">SendGrid</span><span class="link-what">Onde os templates vivem e de onde os emails saem</span><span class="link-url">Email API › Dynamic Templates</span></a></div>
+</div>
+
+<footer class="end">ANTI &middot; uma empresa DUX &middot; guideline das réguas de comunicação</footer>
+</div>
