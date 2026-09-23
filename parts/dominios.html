@@ -1,0 +1,25 @@
+<div class="block">
+  <h2 class="sec">Domínios de envio</h2>
+  <p class="lede" style="margin:0 0 26px;">Na hora de autenticar os domínios no SendGrid, a separação importa mais do que parece: reputação de entrega é medida por domínio. Se um disparo de marketing for marcado como spam em volume, quem paga a conta é o domínio que mandou o disparo &mdash; e a régua transacional não pode ser esse domínio, porque dela depende o código de acesso que destrava o login.</p>
+  <div class="doms">
+    <div class="dom dom-1">
+      <div class="dom-role">Corporativo &middot; interno</div>
+      <div class="dom-addr">@wearedux.com</div>
+      <p class="dom-what">O email das pessoas da Dux. Circulação interna, conversa com cliente, jurídico, cobrança, assinatura de contrato.</p>
+      <div class="dom-rule">Nunca usado para envio automático nem em massa.</div>
+    </div>
+    <div class="dom dom-2">
+      <div class="dom-role">Transacional &middot; a régua</div>
+      <div class="dom-addr">@sejaanti.com.br</div>
+      <p class="dom-what">Os dezoito emails deste documento. Tudo que o sistema dispara sozinho a partir de uma mudança de estado: código, KYC, proposta, liquidação, comprovante.</p>
+      <div class="dom-rule">É o domínio mais crítico dos três. Nada de marketing passa por aqui.</div>
+    </div>
+    <div class="dom dom-3">
+      <div class="dom-role">Marketing &middot; a definir</div>
+      <div class="dom-addr">@mkt.sejaanti.com.br</div>
+      <p class="dom-what">Campanha, novidade de produto, conteúdo, reengajamento. Subdomínio proposto, ainda não decidido.</p>
+      <div class="dom-rule">Subdomínio próprio justamente para não sujar o transacional.</div>
+    </div>
+  </div>
+  <div class="note" style="border-left-color:var(--conta);"><b>Ao configurar no SendGrid</b><p>Autentique cada domínio separadamente, e mantenha o marketing em subuser e IP próprios. O grupo de descadastro (<i>unsubscribe group</i>) existe só no marketing: email de serviço não pode cair no mesmo opt-out, porque enquanto a conta estiver ativa o cliente precisa receber o aviso de documento rejeitado e o comprovante de transferência. O <code>Reply-To</code> da régua transacional aponta para uma caixa monitorada de verdade &mdash; nada de <code>no-reply</code> que devolve bounce.</p></div>
+</div>

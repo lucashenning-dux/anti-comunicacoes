@@ -14,19 +14,21 @@ Não há dependências. Python 3 e mais nada.
 
 ```bash
 python3 build.py          # regenera os 18 HTML em dist/
-python3 make_preview.py   # regenera preview.html
+python3 site.py           # regenera o guideline em site/
 ```
 
-Abra `preview.html` no navegador para ver a régua completa, os gatilhos, o status de
-implementação de cada email e os dezoito layouts renderizados com dados de exemplo.
+Abra `site/index.html` no navegador. O guideline tem três páginas: a home, com o que
+vale para toda comunicação (domínios, workflow, layout), e uma página por régua.
 
 ## Estrutura
 
 ```
 build.py          gerador — o copy, os gatilhos e a régua moram aqui
 regua.json        índice gerado: gatilho, tela, assunto, preheader, variáveis
-make_preview.py   gera a página de revisão
-preview.html      página de revisão (gerada)
+site.py           gera o guideline
+site/             o guideline em três páginas (gerado)
+style.css         o CSS do guideline
+parts/            blocos de texto do guideline que não vêm de dados
 dist/             18 HTML prontos para colar no SendGrid (gerado)
 testdata/         JSON de exemplo para o campo Test Data do SendGrid
 assets/           a marca do cabeçalho, em SVG e em PNG 2x para email
@@ -153,19 +155,22 @@ decidir o layout; o arquivo nasce aqui.
 | Conta | transferência enviada, boleto emitido, pagamento recusado |
 
 A tabela completa — com gatilho, tela do app, persistência na Central de Notificações
-e status de implementação — está em `preview.html`.
+e status de implementação — está em `site/regua-app.html`. A régua do sacado, com as
+comunicações previstas, as variáveis de cada uma e as notas de implementação para o
+backend, está em `site/regua-sacado.html`.
 
 ## Pendências
 
-- **Nenhum template está implementado.** O placar em `preview.html` está zerado nas
+- **Nenhum template está implementado.** O placar em `site/regua-app.html` está zerado nas
   duas colunas (implementada e em produção). O status mora no dicionário `STATUS` em
-  `make_preview.py`.
+  `site.py`.
 - **Subdomínio de marketing não decidido.** `mkt.sejaanti.com.br` é proposta, não
   decisão. O corporativo e o transacional já estão definidos.
 - **Régua do sacado em construção.** O sacado é onde mora o risco da operação e o
   pagamento dele passa pela conta escrow, o que faz dele destinatário de comunicação
-  — com peso jurídico sobre o domicílio de pagamento. A régua ainda não existe; o que
-  se sabe e o que precisa ser decidido está em `preview.html`.
+  — com peso jurídico sobre o domicílio de pagamento. As seis comunicações previstas
+  estão em `site/regua-sacado.html`, mas são proposta: precisam ser conferidas contra
+  o fluxo do Figma e validadas com o jurídico.
 - **`testdata/` cobre só o email 04.** Os demais precisam do JSON de exemplo.
 - **Idioma único.** O copy está em PT-BR; o app é bilíngue. Falta decidir se o email
   segue o idioma do perfil.

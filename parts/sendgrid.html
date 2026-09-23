@@ -1,0 +1,16 @@
+<div class="block">
+  <h2 class="sec">Levar para o SendGrid</h2>
+  <div class="impl">
+    <div class="step"><div class="kicker">Passo 1</div><h4>Um Dynamic Template por arquivo</h4><p>Email API → Dynamic Templates → Create. Cole o HTML no <i>Code Editor</i> (não no Design Editor, que reescreve o markup). O assunto vai no campo Subject, separado do corpo.</p></div>
+    <div class="step"><div class="kicker">Passo 2</div><h4>Handlebars, não substitution tags</h4><p>As variáveis já estão no formato <code>{{first_name}}</code>, que é o dos Dynamic Templates. Cole o JSON de exemplo em <i>Test Data</i> para ver o preview preenchido.</p></div>
+    <div class="step"><div class="kicker">Passo 3</div><h4>Disparo pelo backend</h4><p>Cada mudança de estado chama a Mail Send API com o <code>template_id</code> e o objeto <code>dynamic_template_data</code>. O mesmo evento que cria a notificação in-app dispara o email.</p></div>
+    <div class="step"><div class="kicker">Passo 4</div><h4>IP e domínio separados</h4><p>Transacional e marketing em subdomínios distintos, com <i>unsubscribe group</i> só no marketing. Emails de serviço não podem cair no mesmo grupo de opt-out da conta ativa.</p></div>
+  </div>
+  <div class="note"><b>Um ajuste de premissa</b><p>O SendGrid não importa XML. O que ele aceita é HTML colado no editor de código de um Dynamic Template, ou criado via API (<code>POST /v3/templates/{id}/versions</code>) com o HTML no corpo do JSON. É por isso que cada email aqui é um arquivo <code>.html</code> autocontido: nada de CSS externo, nada de imagem hospedada, nada de <code>&lt;div&gt;</code> onde cliente antigo precisa de tabela.</p></div>
+  <div class="files">anti-comunicacoes/          repositório próprio, fora do código do app
+├── build.py                gerador — o copy e a régua moram aqui
+├── regua.json              índice: gatilho, tela, assunto, variáveis
+├── make_preview.py         gera esta página
+├── dist/                   18 HTML autocontidos, prontos para colar no SendGrid
+└── testdata/               JSON de exemplo para o campo Test Data</div>
+</div>

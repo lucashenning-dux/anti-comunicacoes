@@ -1,0 +1,74 @@
+<title>Régua do Sacado — Guideline ANTI</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500;700&family=Inter:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="style.css">
+<div class="shell">
+<nav class="topnav">
+  <a class="nav-brand" href="index.html">ANTI<span>·</span>Comunicação</a>
+  <div class="nav-links"><a class="nav-link" href="index.html">Guideline</a><a class="nav-link" href="regua-app.html">Régua do app<span class="nav-st">Em revisão</span></a><a class="nav-link atual" href="regua-sacado.html">Régua do sacado<span class="nav-st">In progress</span></a></div>
+</nav>
+<header class="hero pagehero">
+  <div class="kicker">Régua 2 de 2 &middot; destinatário: o sacado</div>
+  <h1>Régua do <em>sacado</em>.<span class="hero-st">In progress</span></h1>
+  <p class="lede">Risco sacado é o modelo padrão da operação: a decisão de crédito olha para quem vai pagar a nota. Essas são as comunicações que saem para ele — outro público, outro tom e outro peso jurídico que os da régua do app.</p>
+  <div class="facts">
+    <div class="fact"><b>6</b><span>comunicações previstas</span></div>
+    <div class="fact"><b>0</b><span>implementadas</span></div>
+    <div class="fact"><b>0</b><span>persistem no app</span></div>
+    <div class="fact"><b>95%</b><span>das operações com escrow</span></div>
+  </div>
+</header>
+
+<div class="block" id="sacado">
+  <h2 class="sec">Por que o sacado recebe email</h2>
+  <div class="wip">
+    <span class="wip-badge">Em construção</span>
+    <h3>O sacado também vai receber email.</h3>
+    <p>Risco sacado é o modelo padrão da operação: a decisão de crédito olha principalmente para quem vai pagar a nota, não para quem a vendeu. É no sacado que mora o risco &mdash; e, em 95% das operações, é o pagamento dele que precisa cair na conta escrow antes de chegar ao cliente.</p>
+    <p>Isso faz dele um destinatário de comunicação, não só um nome no cadastro. Só que uma régua para o sacado não é uma extensão desta: ele não tem conta no app, não pediu nada à ANTI, e o que se diz a ele tem peso jurídico sobre o domicílio de pagamento. Merece desenho próprio, com jurídico na mesa.</p>
+    <p>O app já prevê os dois primeiros passos desse caminho &mdash; as telas de informar o sacado e de solicitação enviada, e o estado de operação aguardando confirmação. O que falta é a comunicação que sai dali.</p>
+    <div class="wip-grid">
+      <div class="wip-col">
+        <h4>O que provavelmente entra</h4>
+        <ul>
+          <li><b>Confirmação da operação</b> &mdash; pedido ao sacado para confirmar a nota e o valor</li>
+          <li><b>Notificação da cessão</b> &mdash; aviso de que o crédito mudou de titular e de qual passa a ser o domicílio de pagamento</li>
+          <li><b>Lembrete de vencimento</b> &mdash; antes da data</li>
+          <li><b>Confirmação de pagamento</b> &mdash; recibo depois da liquidação</li>
+        </ul>
+      </div>
+      <div class="wip-col q">
+        <h4>O que precisa ser decidido antes</h4>
+        <ul>
+          <li>Quem assina o email aos olhos do sacado &mdash; ANTI, Dux, ou o próprio cedente</li>
+          <li>Qual domínio envia, já que não é o mesmo público da régua do cedente</li>
+          <li>Base legal do contato: o sacado nunca deu dado à ANTI</li>
+          <li>Se a instrução de pagamento vive no email ou só no boleto e no CNAB</li>
+          <li>Se há persistência em algum lugar, já que ele não tem app</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="block">
+  <h2 class="sec">As comunicações</h2>
+  <p class="lede" style="margin:0 0 20px;">Cada linha traz o gatilho, o que se espera do destinatário, as variáveis que o backend precisa mandar em <code>dynamic_template_data</code> e o espaço do <code>template_id</code> do SendGrid, que se preenche quando o template for criado.</p>
+  <p class="aviso"><b>Proposta, não fechado.</b> Esta lista foi derivada do fluxo do sacado no app e do desenho da operação. Ela precisa ser conferida contra o fluxo que está no Figma e validada com o jurídico antes de virar template.</p>
+  <div class="tablewrap"><table class="sacado">
+    <thead><tr>
+      <th>Comunicação</th><th>Gatilho</th><th>O que se espera</th>
+      <th>Variáveis</th><th>Template ID</th><th>Status</th>
+    </tr></thead>
+    <tbody><tr><td class="s-name"><span class="g-num">01</span>Confirmação da operação</td><td class="s-when">O cedente informa o sacado e envia a solicitação (telas de informar sacado e solicitação enviada; pedido em OT3)<span class="s-para">Contato financeiro do sacado</span></td><td class="s-acao">Confirmar a nota e o valor</td><td class="s-vars"><code>{{sacado_name}}</code><code>{{sacado_contact}}</code><code>{{cedente_name}}</code><code>{{order_id}}</code><code>{{invoice_number}}</code><code>{{gross_amount}}</code><code>{{due_date}}</code><code>{{confirm_url}}</code><code>{{expires_at}}</code></td><td class="s-tid"><span class="tid-vazio">a preencher</span></td><td class="st"><span class="pill-wip">In progress</span></td></tr><tr><td class="s-name"><span class="g-num">02</span>Lembrete de confirmação</td><td class="s-when">O prazo de confirmação está acabando e o sacado não respondeu<span class="s-para">Contato financeiro do sacado</span></td><td class="s-acao">Confirmar antes do prazo</td><td class="s-vars"><code>{{sacado_name}}</code><code>{{cedente_name}}</code><code>{{order_id}}</code><code>{{confirm_url}}</code><code>{{hours_left}}</code></td><td class="s-tid"><span class="tid-vazio">a preencher</span></td><td class="st"><span class="pill-wip">In progress</span></td></tr><tr><td class="s-name"><span class="g-num">03</span>Notificação da cessão</td><td class="s-when">Contrato assinado — o crédito muda de titular<span class="s-para">Contato financeiro e jurídico do sacado</span></td><td class="s-acao">Registrar o novo domicílio de pagamento</td><td class="s-vars"><code>{{sacado_name}}</code><code>{{cedente_name}}</code><code>{{invoice_number}}</code><code>{{gross_amount}}</code><code>{{due_date}}</code><code>{{escrow_account}}</code><code>{{assignment_date}}</code></td><td class="s-tid"><span class="tid-vazio">a preencher</span></td><td class="st"><span class="pill-wip">In progress</span></td></tr><tr><td class="s-name"><span class="g-num">04</span>Lembrete de vencimento</td><td class="s-when">Alguns dias antes da data de vencimento da nota<span class="s-para">Contato financeiro do sacado</span></td><td class="s-acao">Pagar no domicílio correto</td><td class="s-vars"><code>{{sacado_name}}</code><code>{{invoice_number}}</code><code>{{amount}}</code><code>{{due_date}}</code><code>{{escrow_account}}</code><code>{{boleto_url}}</code></td><td class="s-tid"><span class="tid-vazio">a preencher</span></td><td class="st"><span class="pill-wip">In progress</span></td></tr><tr><td class="s-name"><span class="g-num">05</span>Confirmação de pagamento</td><td class="s-when">O pagamento é identificado na conta escrow<span class="s-para">Contato financeiro do sacado</span></td><td class="s-acao">Nenhuma — é recibo</td><td class="s-vars"><code>{{sacado_name}}</code><code>{{invoice_number}}</code><code>{{amount}}</code><code>{{paid_at}}</code><code>{{receipt_url}}</code></td><td class="s-tid"><span class="tid-vazio">a preencher</span></td><td class="st"><span class="pill-wip">In progress</span></td></tr><tr><td class="s-name"><span class="g-num">06</span>Operação encerrada sem efeito</td><td class="s-when">A operação é cancelada depois de o sacado já ter sido contatado<span class="s-para">Contato financeiro do sacado</span></td><td class="s-acao">Nenhuma — desfaz a instrução anterior</td><td class="s-vars"><code>{{sacado_name}}</code><code>{{cedente_name}}</code><code>{{order_id}}</code><code>{{cancel_reason}}</code></td><td class="s-tid"><span class="tid-vazio">a preencher</span></td><td class="st"><span class="pill-wip">In progress</span></td></tr></tbody>
+  </table></div>
+</div>
+
+<div class="block">
+  <h2 class="sec">Para a implementação no backend</h2>
+  <p class="lede" style="margin:0 0 30px;">O que muda em relação à régua do app, onde o destinatário é um usuário autenticado.</p>
+  <div class="bk-grid"><div class="bk"><h4>O link precisa ser um token assinado</h4><p>O sacado não tem conta, então a confirmação acontece fora de sessão. O <code>confirm_url</code> carrega um token de uso único, com expiração curta e vínculo ao pedido — não um id sequencial adivinhável.</p></div><div class="bk"><h4>Sem persistência in-app</h4><p>Nenhuma dessas comunicações vira card na Central de Notificações: o destinatário não tem onde vê-la. O email é o canal inteiro, e o registro fica no log de eventos da operação.</p></div><div class="bk"><h4>Bounce volta para o cedente</h4><p>O endereço do sacado é digitado pelo cedente, então erro de digitação é o caso comum, não a exceção. O Event Webhook precisa tratar o bounce dessas comunicações avisando o cedente no app, e não silenciosamente.</p></div><div class="bk"><h4>Idempotência por evento</h4><p>Retry de fila não pode virar segundo email. A chave de idempotência combina o id da operação com o tipo de comunicação.</p></div><div class="bk"><h4>O que não pode ir no corpo</h4><p>Dados do cedente além do necessário para o sacado reconhecer a nota. A relação comercial é dele com o cedente; a ANTI entra como cessionária, não como parte da negociação.</p></div><div class="bk"><h4>Remetente e domínio</h4><p>Decisão em aberto: se sai do mesmo domínio transacional do app ou de um subdomínio próprio. O público é outro e o volume é outro, o que pesa a favor de separar.</p></div></div>
+</div>
+
+<footer class="end">ANTI &middot; uma empresa DUX &middot; guideline das réguas de comunicação</footer>
+</div>
