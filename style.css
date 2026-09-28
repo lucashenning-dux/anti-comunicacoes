@@ -195,6 +195,7 @@ table.duas td { padding:16px 18px 16px 0; border-bottom:1px solid var(--line-2);
 .d-name a:hover { background:var(--acid); color:#171717; }
 .d-name a:focus-visible { outline:2px solid var(--acid-deep); outline-offset:3px; }
 .pill-wip { display:inline-block; font-family:var(--f-mono); font-size:9.5px; font-weight:700; text-transform:uppercase; letter-spacing:.09em; color:var(--kyc); border:1px dashed currentColor; border-radius:100px; padding:4px 10px; white-space:nowrap; }
+.pill-new { display:inline-block; font-family:var(--f-mono); font-size:9.5px; font-weight:700; text-transform:uppercase; letter-spacing:.09em; color:var(--auth); border:1px dashed currentColor; border-radius:100px; padding:4px 10px; white-space:nowrap; }
 .d-note { display:block; font-family:var(--f-mono); font-size:10.5px; color:var(--mute); margin-top:7px; }
 .flow-title { font-family:var(--f-mono); font-weight:700; font-size:9.5px; text-transform:uppercase; letter-spacing:.14em; color:var(--mute); margin:0 0 4px; }
 
