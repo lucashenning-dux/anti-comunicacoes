@@ -402,22 +402,22 @@ SACADO = [
  dict(cod="FRS1",   nome="Convite", fluxo="FRS", quem="F",
       tid="d-df076170993449039a972802cde7bbf5",
       quando="O parceiro inclui o CNPJ do fornecedor na carteira dele — cadastro avulso ou importação por planilha — e o fornecedor ainda não tem conta no portal",
-      vars=["cnpj","link_cta","razao_social","rotulo_papel","rotulo_papel_plural"],
+      vars=["cnpj","link_cta","nome_parceira","razao_social","rotulo_papel","rotulo_papel_plural"],
       node="30:6", png="FRS1-convite.png"),
  dict(cod="FRS1",   nome="Cadastro em análise", fluxo="FRS", quem="F",
       tid="d-68534294d64145d1bc45ef348d7cfba0",
       quando="O fornecedor conclui o cadastro num único formulário — CNPJ, dados do representante e os quatro documentos — e ele entra em conferência",
-      vars=["data_envio","link_cta","razao_social"],
+      vars=["data_envio","link_cta","nome_parceira","razao_social"],
       node="30:10", png="FRS1-cadastro-em-analise.png"),
  dict(cod="FRS2",   nome="Cadastro aprovado", fluxo="FRS", quem="F",
       tid="d-48eafcac67b94c5a87b51646caa9c1ff",
       quando="A equipe Anti aprova os documentos e o parceiro confirma o vínculo — a conta do fornecedor passa a ATIVA",
-      vars=["data_aprovacao","link_cta","razao_social"],
+      vars=["data_aprovacao","link_cta","nome_parceira","razao_social"],
       node="30:14", png="FRS2-cadastro-aprovado.png"),
  dict(cod="FRS3",   nome="Cadastro negado", fluxo="FRS", quem="F",
       tid="d-7a59f96e6e3f4ae4ab3bd0a4f6f5f4e0",
       quando="O cadastro do fornecedor é reprovado na conferência de documentos",
-      vars=["data_analise","link_cta","razao_social"],
+      vars=["data_analise","link_cta","nome_parceira","razao_social"],
       node="30:18", png="FRS3-cadastro-negado.png"),
  dict(cod="FRS2-P", nome="Cadastro aprovado (parceiro)", fluxo="FRS", quem="P",
       tid="d-e87f58eec2b04bc0baf5c91e4f8964ef",
@@ -432,47 +432,63 @@ SACADO = [
  dict(cod="PFS1",   nome="Solicitação enviada", fluxo="PFS", quem="F",
       tid="d-dd5d687573bd48a38339e77470225c4f",
       quando="O fornecedor anexa a nota, confere os dados extraídos e confirma o envio — etapa 3 de 3 do assistente de nova antecipação",
-      vars=["link_cta","order_id","valor_nota","vencimento"],
+      vars=["link_cta","nome_parceira","order_id","valor_nota","vencimento"],
       node="41:2", png="PFS1-solicitacao-enviada.png"),
  dict(cod="PFS1-P", nome="Nova solicitação (parceiro)", fluxo="PFS", quem="P",
       tid="d-2e9435d081214a13a6f9fa25315c4cf9",
       quando="Mesmo envio, do lado do parceiro — a nota cai na fila “Para analisar” do Portal do Parceiro",
-      vars=["cnpj_cedente","link_cta","nome_cedente","numero_nota","valor_nota","vencimento"],
+      vars=["cnpj_cedente","descricao","link_cta","nome_cedente","order_id","valor_nota","vencimento"],
       node="41:14", png="PFS1-parceiro-nova-solicitacao.png"),
  dict(cod="PFS2",   nome="Solicitação aprovada", fluxo="PFS", quem="F",
       tid="d-84f758f7f7dc4c5eb8681cd34905c7f0",
       quando="A dupla aprovação fecha: o parceiro aprova a nota (APROVAÇÃO PARCEIRO) e a Anti aprova o crédito (APROVAÇÃO ANTI) — contrato gerado",
-      vars=["desagio","link_cta","order_id","valor_liquido","valor_nota"],
+      vars=["desagio","link_cta","nome_parceira","order_id","valor_liquido","valor_nota"],
       node="41:6", png="PFS2-solicitacao-aprovada.png"),
  dict(cod="PFS3",   nome="Solicitação recusada", fluxo="PFS", quem="F",
       tid="d-e9b5379872e64b55972589430d7cdca3",
       quando="A operação é recusada — pelo parceiro ou pela Anti, na tela de detalhe da operação",
-      vars=["link_cta","order_id","valor_nota"],
+      vars=["link_cta","nome_parceira","order_id","valor_nota"],
       node="41:10", png="PFS3-solicitacao-recusada.png"),
  dict(cod="PFS4",   nome="Contrato assinado", fluxo="PFS", quem="F",
       tid="d-5b598cf937164a07b8bcaaf0453ef957",
       quando="O contrato da cessão é assinado digitalmente por todas as partes",
-      vars=["conta_destino","link_cta","order_id","previsao_credito","valor_liquido"],
+      vars=["conta_destino","link_cta","nome_parceira","order_id","previsao_credito","valor_liquido"],
       node="91:12", png="PFS4-contrato-assinado.png"),
  dict(cod="PFS5",   nome="Valor creditado", fluxo="PFS", quem="F",
       tid="d-72de6fe3e58145db9d90ae63f21815da",
       quando="O depósito do valor líquido é efetivado na conta do fornecedor — liquidação da operação",
-      vars=["conta_destino","data_credito","desagio","link_cta","order_id","valor_liquido","valor_nota"],
+      vars=["conta_destino","data_credito","desagio","link_cta","nome_parceira","order_id","valor_liquido","valor_nota"],
       node="91:16", png="PFS5-valor-creditado.png"),
  dict(cod="PFS6",   nome="Falha no depósito", fluxo="PFS", quem="F",
       tid="d-0bab21d89b5a4a4e898318e371b39490",
       quando="O depósito não se conclui — dados bancários divergentes, conta encerrada ou saldo insuficiente do lado da Anti",
       vars=["id_tentativa","link_cta","motivo_falha","order_id","valor_liquido"],
       node="91:20", png="PFS6-falha-no-deposito.png"),
+ dict(cod="PFS7",   nome="Pendência na solicitação", fluxo="PFS", quem="F", novo=True,
+      tid="d-b50b009d7eb54c168e509b3f03a10f10",
+      quando="A equipe Anti revisa a solicitação e falta algo — documento ou informação — para seguir com a análise (sem tela mapeada: descoberto no SendGrid em 25/09/2026, sem passar pelo Figma)",
+      vars=["link_cta","nome_parceira","order_id","pendencias","pendencias_frase","valor_nota","vencimento"],
+      node="145:3", png="PFS7-pendencia-na-solicitacao.png"),
+ dict(cod="PRS1",   nome="Convite parceira", fluxo="PRS", quem="P", novo=True,
+      tid="d-113bdd4dfd044dcd9370de4bd2b9301f",
+      quando="A equipe Anti cadastra o responsável por uma nova empresa parceira, que ainda não tem acesso ao Portal do Parceiro (sem tela mapeada: descoberto no SendGrid em 25/09/2026, sem passar pelo Figma)",
+      vars=["email","link_cta","nome_parceira","senha_minima","validade"],
+      node="145:9", png="PRS1-convite-parceira.png"),
 ]
 
 
-FLUXO_NOME = {"FRS": "Cadastro do fornecedor", "PFS": "Operação no portal"}
+
+FLUXO_NOME = {"FRS": "Cadastro do fornecedor", "PFS": "Operação no portal", "PRS": "Acesso do parceiro"}
 QUEM_NOME = {"F": "Fornecedor", "P": "Parceiro"}
 
 import re as _re
 def _slug(t):
     return _re.sub(r"[^a-z0-9]+", "-", t.lower()).strip("-")
+
+def status_pill(x):
+    if x.get("novo"):
+        return '<span class="pill-new">Novo · sem tela</span>'
+    return '<span class="pill-wip">In progress</span>'
 
 sacado_rows = ""
 _fluxo_atual = None
@@ -492,7 +508,7 @@ for x in SACADO:
       f'<td class="s-when">{html.escape(x["quando"])}</td>'
       f'<td class="s-vars">{"".join(f"<code>{{{{{v}}}}}</code>" for v in x["vars"])}</td>'
       f'<td class="s-tid"><code class="tid">{x["tid"]}</code></td>'
-      f'<td class="st"><span class="pill-wip">In progress</span></td>'
+      f'<td class="st">{status_pill(x)}</td>'
       f'</tr>')
 
 BACKEND = [
@@ -552,16 +568,18 @@ for x in SACADO:
       f'</article>')
 preview_html += "</div>"
 
+FIGMA_PARCEIRO = "https://www.figma.com/design/XIT0diYFNoRLVEBR02XrAx/Risco-Sacado?node-id=24-7"
+
 sacado = f'''<header class="hero pagehero">
   <div class="kicker">Régua 2 de 2 &middot; Portal ANTI &middot; produto Risco Sacado</div>
   <h1>Régua do <em>risco sacado</em>.<span class="hero-st">In progress</span></h1>
-  <p class="lede">Treze comunicações que cobrem o cadastro do fornecedor, a análise da operação e o caminho do dinheiro — só o que está aprovado no Figma e criado no SendGrid, pronto para testar disparo. Diferente da régua do app, aqui há dois destinatários: o fornecedor, que vende a nota, e o parceiro, que a paga.</p>
+  <p class="lede">Quinze comunicações que cobrem o cadastro do fornecedor, a análise da operação e o caminho do dinheiro — treze com tela mapeada no Figma, e duas descobertas direto no SendGrid, sem passar por lá ainda. Diferente da régua do app, aqui há dois destinatários: o fornecedor, que vende a nota, e o parceiro, que a paga.</p>
   <div class="facts">
-    <div class="fact"><b>13</b><span>comunicações</span></div>
-    <div class="fact"><b>2</b><span>fluxos</span></div>
+    <div class="fact"><b>15</b><span>comunicações</span></div>
+    <div class="fact"><b>3</b><span>fluxos</span></div>
     <div class="fact"><b>2</b><span>destinatários</span></div>
-    <div class="fact"><b>13</b><span>template IDs verificados</span></div>
-    <div class="fact"><b>0</b><span>em produção</span></div>
+    <div class="fact"><b>15</b><span>template IDs verificados</span></div>
+    <div class="fact"><b>2</b><span>sem tela mapeada</span></div>
   </div>
 </header>
 
@@ -570,7 +588,8 @@ sacado = f'''<header class="hero pagehero">
 <div class="block">
   <h2 class="sec">As comunicações</h2>
   <p class="lede" style="margin:0 0 20px;">Agrupadas pelo fluxo a que pertencem. Cada linha traz quem recebe, o gatilho, as variáveis reais que o template espera em <code>dynamic_template_data</code> e o <code>template_id</code> do SendGrid. Clique no nome da comunicação para ver a cara dela na seção Preview, logo abaixo.</p>
-  <p class="aviso"><b>Só o que está aprovado no Figma e criado no SendGrid.</b> Este documento é espelho do fluxo desenhado nas páginas <a href="{FIGMA_CADASTRO}" target="_blank" rel="noopener">Cadastro Fornecedor</a> e <a href="{FIGMA_LOGADO}" target="_blank" rel="noopener">Fluxo logado</a> — nenhuma proposta ainda não decidida entra aqui. Template ID e variáveis foram conferidos contra a conta real do SendGrid e contra o HTML publicado. As variáveis são exatamente os <code>{{{{token}}}}</code> que aparecem no HTML de cada versão ativa. Uma convenção vale para as treze: o botão de ação é sempre <code>{{{{link_cta}}}}</code>, em todo template — nunca um nome específico como <code>contrato_url</code> ou <code>portal_url</code>.</p>
+  <p class="aviso"><b>Template ID e variáveis conferidos contra a conta real do SendGrid, um a um, em 28/09/2026.</b> Este documento é espelho do fluxo desenhado nas páginas <a href="{FIGMA_CADASTRO}" target="_blank" rel="noopener">Cadastro Fornecedor</a>, <a href="{FIGMA_LOGADO}" target="_blank" rel="noopener">Fluxo logado</a> e <a href="{FIGMA_PARCEIRO}" target="_blank" rel="noopener">Fluxo do Parceiro</a> — nenhuma proposta ainda não decidida entra aqui (RS1/RS2 seguem fora, ver nota no backend). As variáveis são exatamente os <code>{{{{token}}}}</code> que aparecem no HTML de cada versão ativa. Uma convenção vale para as quinze: o botão de ação é sempre <code>{{{{link_cta}}}}</code>, em todo template — nunca um nome específico como <code>contrato_url</code> ou <code>portal_url</code>.</p>
+  <div class="note" style="border-left-color:var(--auth);"><b>Ressincronizado depois de uma edição direta no SendGrid</b><p>Em 25/09/2026, quem implementou o backend editou os treze templates originais direto no Code Editor do SendGrid — sem passar pelo Figma nem por este repositório. A mudança real: <code>{{{{nome_parceira}}}}</code> passou a substituir "Mynd" cravado no texto (o portal tem mais parceiros, como o Banco do Brasil), e <code>PFS1-P</code> trocou a linha "Nota" por "Serviço" (<code>{{{{descricao}}}}</code> no lugar de <code>{{{{numero_nota}}}}</code>), alinhando com o que <code>PFS1</code> já mostrava do lado do fornecedor. A mesma pessoa também criou dois templates novos direto no SendGrid — <b>PFS7</b> e <b>PRS1</b>, marcados abaixo como &ldquo;Novo &middot; sem tela&rdquo; — que preenchem lacunas reais do fluxo (uma pendência na análise, o primeiro acesso de um parceiro novo) mas ainda não têm uma tela do portal mapeada aqui. Este documento, o Figma e o gerador em <code>emails/</code> foram todos ressincronizados a partir do SendGrid nesta data.</p></div>
   <div class="tablewrap"><table class="sacado">
     <thead><tr>
       <th>Comunicação</th><th>Quem recebe</th><th>Gatilho</th>
@@ -582,8 +601,8 @@ sacado = f'''<header class="hero pagehero">
 
 <div class="block" id="preview">
   <h2 class="sec">Preview</h2>
-  <p class="lede" style="margin:0 0 12px;">A cara real de cada uma das treze comunicações, na mesma ordem e com os mesmos códigos da tabela acima — são capturas do HTML publicado, não um mockup à parte. Clique numa imagem para abrir em tamanho real, ou em &ldquo;Ver no Figma&rdquo; para abrir o card correspondente no arquivo <a href="https://www.figma.com/design/XIT0diYFNoRLVEBR02XrAx/Risco-Sacado" target="_blank" rel="noopener">Risco Sacado</a>.</p>
-  <p class="lede" style="margin:0 0 30px;">O Figma é a referência para contexto, não só para o visual: cada card fica ao lado do print da tela do Portal ANTI que dispara aquela comunicação, ligado por uma seta. É lá que dá para ver de onde o evento vem e para onde o botão do email leva de volta — a página <a href="{FIGMA_CADASTRO}" target="_blank" rel="noopener">Cadastro Fornecedor</a> tem o FRS1/FRS2/FRS3, e a <a href="{FIGMA_LOGADO}" target="_blank" rel="noopener">Fluxo logado</a> tem o PFS1&ndash;PFS6.</p>
+  <p class="lede" style="margin:0 0 12px;">A cara real de cada uma das quinze comunicações, na mesma ordem e com os mesmos códigos da tabela acima — são capturas do HTML publicado, não um mockup à parte. Clique numa imagem para abrir em tamanho real, ou em &ldquo;Ver no Figma&rdquo; para abrir o card correspondente no arquivo <a href="https://www.figma.com/design/XIT0diYFNoRLVEBR02XrAx/Risco-Sacado" target="_blank" rel="noopener">Risco Sacado</a>.</p>
+  <p class="lede" style="margin:0 0 30px;">O Figma é a referência para contexto, não só para o visual: a maioria dos cards fica ao lado do print da tela do Portal ANTI que dispara aquela comunicação, ligado por uma seta — a página <a href="{FIGMA_CADASTRO}" target="_blank" rel="noopener">Cadastro Fornecedor</a> tem o FRS1/FRS2/FRS3, e a <a href="{FIGMA_LOGADO}" target="_blank" rel="noopener">Fluxo logado</a> tem o PFS1&ndash;PFS6. PFS7 e PRS1 são exceção: entraram no Figma nesta ressincronização, com borda tracejada roxa, sem seta para nenhuma tela — porque nenhuma foi mapeada ainda.</p>
   {preview_html}
 </div>
 
